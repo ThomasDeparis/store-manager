@@ -21,7 +21,8 @@
       mask="#.##"
       fill-mask="0"
       reverse-fill-mask
-      v-model.number="sellPrice"
+      v-model="sellPrice"
+      input-class="text-right"
       label="Prix de vente HT"
       lazy-rules
       :rules="[
