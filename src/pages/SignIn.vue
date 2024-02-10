@@ -20,7 +20,7 @@ import SignInputs from 'components/SignInputs.vue';
 import { useRouter } from 'vue-router';
 
 import { handleAuthError } from '../utils/auth-error-handler';
-import { NotifyError, NotifySuccess } from '../utils/notify-handler';
+import useNotifyHandler from '../hooks/notify-handler';
 
 import { useI18n } from 'vue-i18n';
 
@@ -32,12 +32,14 @@ export default {
   setup() {
     const router = useRouter();
     const { t } = useI18n();
+    const notifier = useNotifyHandler();
 
-    const handleSignFail = (error) => NotifyError(handleAuthError(error));
+    const handleSignFail = (error) =>
+      notifier.NotifyError(handleAuthError(error));
 
     const handleSignOk = () => {
-      NotifySuccess(t('auth.loginOk'));
-      router.push('/');
+      notifier.NotifySuccess(t('auth.loginOk'));
+      router.push({ name: 'index' });
     };
 
     return {

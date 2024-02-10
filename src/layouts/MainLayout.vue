@@ -123,7 +123,7 @@ export default defineComponent({
         };
       } else {
         return {
-          onSign: () => router.push({ path: 'signin' }),
+          onSign: () => router.push({ name: 'signin' }),
           label: t('auth.loginAction'),
           icon: 'login',
         };
