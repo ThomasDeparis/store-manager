@@ -39,7 +39,7 @@ export default {
 
     const handleSignOk = () => {
       notifier.NotifySuccess(t('auth.loginOk'));
-      router.push({ name: 'index' });
+      router.push({ name: 'products' });
     };
 
     return {

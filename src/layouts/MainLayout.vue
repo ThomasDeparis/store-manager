@@ -16,6 +16,7 @@
         <div>
           <q-btn
             flat
+            name="sign-btn"
             :icon-right="signButton.icon"
             :label="signButton.label"
             @click="signButton.onSign"
@@ -26,7 +27,7 @@
 
     <q-drawer v-model="leftDrawerOpen" side="left" show-if-above bordered>
       <q-list>
-        <q-item-label header> Essential Links </q-item-label>
+        <q-item-label header> Menu </q-item-label>
 
         <EssentialLink
           v-for="link in essentialLinks"
@@ -51,8 +52,8 @@ import { useI18n } from 'vue-i18n';
 
 const linksList = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
+    title: 'Produits',
+    caption: '',
     icon: 'school',
     link: 'https://quasar.dev',
   },

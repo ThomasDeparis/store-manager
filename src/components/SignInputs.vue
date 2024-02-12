@@ -1,6 +1,7 @@
 <template>
   <q-form @submit.prevent="onSubmit" @reset="onReset" class="q-gutter-md">
     <q-input
+      :data-testid="modeLabel + '-email-input'"
       filled
       type="email"
       v-model="email"
@@ -10,6 +11,7 @@
     />
 
     <q-input
+      :data-testid="modeLabel + '-password-input'"
       filled
       type="password"
       v-model="password"
@@ -18,6 +20,7 @@
       :rules="[(val) => (val && val.length > 0) || $t('forms.mandatory')]"
     />
     <q-input
+      :data-testid="modeLabel + '-passwordrepeat-input'"
       v-if="signUpMode"
       filled
       type="password"
@@ -28,8 +31,14 @@
     />
 
     <div class="flex flex-center">
-      <q-btn :label="validateButtonLabel" type="submit" color="primary" />
       <q-btn
+        :data-testid="modeLabel + '-okbtn'"
+        :label="validateButtonLabel"
+        type="submit"
+        color="primary"
+      />
+      <q-btn
+        :data-testid="modeLabel + '-resetbtn'"
         :label="$t('buttons.reset')"
         type="reset"
         color="primary"
@@ -47,7 +56,12 @@ import { useI18n } from 'vue-i18n';
 
 export default {
   name: 'SignInputs',
-  props: ['signUpMode'],
+  props: {
+    signUpMode: {
+      type: Boolean,
+      default: false,
+    },
+  },
   emits: ['onSignSuccessful', 'onSignFailed'],
 
   setup(props, context) {
@@ -55,6 +69,8 @@ export default {
     const email = ref(null);
     const password = ref(null);
     const passwordRepeat = ref(null);
+
+    const modeLabel = props.signUpMode ? 'signup' : 'signin';
 
     const validateButtonLabel = props.signUpMode
       ? t('auth.signUpAction')
@@ -99,6 +115,7 @@ export default {
     };
 
     return {
+      modeLabel,
       email,
       password,
       passwordRepeat,
