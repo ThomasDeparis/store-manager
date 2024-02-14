@@ -19,8 +19,8 @@
 import SignInputs from 'components/SignInputs.vue';
 import { useRouter } from 'vue-router';
 
-import { handleAuthError } from '../utils/auth-error-handler';
-import useNotifyHandler from '../hooks/notify-handler';
+import { handleAuthError } from 'src/utils/auth-error-handler';
+import useNotifyHandler from 'src/hooks/notify-handler';
 
 import { useI18n } from 'vue-i18n';
 

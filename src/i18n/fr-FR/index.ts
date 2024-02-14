@@ -5,6 +5,7 @@ export default {
   },
   buttons: {
     reset: 'Reset',
+    create: 'Créer',
   },
   forms: {
     mandatory: 'Champ obligatoire',
@@ -23,5 +24,17 @@ export default {
   product: {
     referenceExists: 'Cette référence produit existe déjà',
     created: 'Produit créé avec succès',
+    reference: 'Référence produit',
+    providerReference: 'Référence fournisseur',
+    providerRef: 'Réf. fournisseur',
+    name: 'Nom',
+    sellPrice: 'Prix de vente HT',
+    quantity: 'Stock',
+    enterValidSellPrice: 'Entrer un prix de vente valide',
+    newProduct: 'Nouveau produit',
+  },
+  menu: {
+    menu: 'Menu',
+    products: 'Produits',
   },
 };

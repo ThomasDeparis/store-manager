@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { IUserState } from '../models/user';
-import { auth } from '../firebase.config';
+import { IUserState } from 'models/user';
+import { auth } from 'src/firebase.config';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,

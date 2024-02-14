@@ -1,22 +1,16 @@
 <template>
-  <q-item
-    clickable
-    tag="a"
-    target="_blank"
-    :href="link"
-  >
-    <q-item-section
-      v-if="icon"
-      avatar
-    >
-      <q-icon :name="icon" />
-    </q-item-section>
+  <router-link custom :to="{ name: routeName }" v-slot="{ href }">
+    <q-item clickable :href="href">
+      <q-item-section v-if="icon" avatar>
+        <q-icon :name="icon" />
+      </q-item-section>
 
-    <q-item-section>
-      <q-item-label>{{ title }}</q-item-label>
-      <q-item-label caption>{{ caption }}</q-item-label>
-    </q-item-section>
-  </q-item>
+      <q-item-section>
+        <q-item-label>{{ title }}</q-item-label>
+        <q-item-label caption>{{ caption }}</q-item-label>
+      </q-item-section>
+    </q-item>
+  </router-link>
 </template>
 
 <script lang="ts">
@@ -27,23 +21,23 @@ export default defineComponent({
   props: {
     title: {
       type: String,
-      required: true
+      required: true,
     },
 
     caption: {
       type: String,
-      default: ''
+      default: '',
     },
 
-    link: {
+    routeName: {
       type: String,
-      default: '#'
+      required: true,
     },
 
     icon: {
       type: String,
-      default: ''
-    }
-  }
+      default: '',
+    },
+  },
 });
 </script>

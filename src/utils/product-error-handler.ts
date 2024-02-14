@@ -1,6 +1,6 @@
-import { IProductError, ProductErrorKey } from '../models/producterror';
-import { ErrorType } from '../models/errortype';
-import { t } from '../i18n';
+import { IProductError, ProductErrorKey } from 'models/producterror';
+import { ErrorType } from 'models/errortype';
+import { t } from 'src/i18n';
 
 export function handleProductError(originalError: IProductError) {
   if (originalError.errorType === ErrorType.Technical) {

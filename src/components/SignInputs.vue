@@ -51,7 +51,7 @@
 
 <script>
 import { ref, watch, computed } from 'vue';
-import { useUserStore } from '../stores/user-store.ts';
+import { useUserStore } from 'stores/user-store.ts';
 import { useI18n } from 'vue-i18n';
 
 export default {

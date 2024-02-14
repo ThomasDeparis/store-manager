@@ -7,7 +7,7 @@
           dense
           round
           icon="menu"
-          aria-label="Menu"
+          :aria-label="$t('menu.menu')"
           @click="toggleLeftDrawer"
         />
 
@@ -50,51 +50,6 @@ import EssentialLink from 'components/EssentialLink.vue';
 import { useUserStore } from 'stores/user-store';
 import { useI18n } from 'vue-i18n';
 
-const linksList = [
-  {
-    title: 'Produits',
-    caption: '',
-    icon: 'school',
-    link: 'https://quasar.dev',
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
-  },
-];
-
 export default defineComponent({
   name: 'MainLayout',
 
@@ -106,10 +61,18 @@ export default defineComponent({
     const { t } = useI18n();
     const router = useRouter();
     const leftDrawerOpen = ref(false);
-    const rightDrawerOpen = ref(false);
 
     const userStore = useUserStore();
     const user = computed(() => userStore.userData);
+
+    const menuLinks = [
+      {
+        title: t('menu.products'),
+        caption: '',
+        icon: 'school',
+        routeName: 'products',
+      },
+    ];
 
     onMounted(() => {
       userStore.fetchUser();
@@ -132,9 +95,8 @@ export default defineComponent({
     });
 
     return {
-      essentialLinks: linksList,
+      essentialLinks: menuLinks,
       leftDrawerOpen,
-      rightDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },

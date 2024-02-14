@@ -7,7 +7,6 @@
 
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
-
 const { configure } = require('quasar/wrappers');
 const path = require('path');
 
@@ -53,6 +52,11 @@ module.exports = configure(function (/* ctx */) {
         browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
         node: 'node16',
       },
+      alias: {
+        models: path.join(__dirname, './src/models'),
+        utils: path.join(__dirname, './src/utils'),
+        hooks: path.join(__dirname, './src/hooks'),
+      },
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
@@ -70,7 +74,12 @@ module.exports = configure(function (/* ctx */) {
       // polyfillModulePreload: true,
       // distDir
 
-      // extendViteConf (viteConf) {},
+      // extendViteConf(viteConf) {
+      //   Object.assign(viteConf.resolve.alias, {
+      //     models: path.join(__dirname, './src/models'),
+      //     utils: path.join(__dirname, './src/utils'),
+      //   });
+      // },
       // viteVuePluginOptions: {},
 
       vitePlugins: [
@@ -104,8 +113,7 @@ module.exports = configure(function (/* ctx */) {
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
     framework: {
       config: {},
-
-      // iconSet: 'material-icons', // Quasar icon set
+      iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
 
       // For special cases outside of where the auto-import strategy can have an impact

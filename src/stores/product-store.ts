@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
-import { IProductState, IProduct } from '../models/product';
-import { IProductError, ProductErrorKey } from '../models/producterror';
-import { ErrorType } from '../models/errortype';
-import { db } from '../firebase.config';
+import { IProductState, IProduct } from 'models/product';
+import { IProductError, ProductErrorKey } from 'models/producterror';
+import { ErrorType } from 'models/errortype';
+import { db } from 'src/firebase.config';
 import {
   collection,
   query,

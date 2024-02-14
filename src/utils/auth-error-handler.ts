@@ -1,5 +1,5 @@
-import { AuthError } from '../models/autherror';
-import { t } from '../i18n';
+import { AuthError } from 'models/autherror';
+import { t } from 'src/i18n';
 
 function getErrorToDisplay(originalError: AuthError) {
   if (originalError?.message.toLowerCase().includes('invalid-credential')) {
