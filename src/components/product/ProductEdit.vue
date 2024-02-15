@@ -1,22 +1,25 @@
 <template>
-  <side-panel :title="$t('product.newProduct')" @close="$emit('close')">
+  <side-panel :title="$t('product.detail')" @close="$emit('close')">
     <q-form @submit="onSubmit" ref="form" class="q-gutter-md q-pa-sm">
       <q-input
         filled
-        v-model="reference"
+        v-model="editing.reference"
         :label="$t('product.reference')"
+        readonly
         lazy-rules
         :rules="[(val) => (val && val.length > 0) || $t('forms.mandatory')]"
       />
       <q-input
         filled
-        v-model="providerReference"
+        v-model="editing.providerReference"
+        :readonly="readonlyMode"
         :label="$t('product.providerReference')"
       />
       <q-input
         filled
-        v-model="name"
+        v-model="editing.name"
         :label="$t('product.name')"
+        :readonly="readonlyMode"
         lazy-rules
         :rules="[(val) => (val && val.length > 0) || $t('forms.mandatory')]"
       />
@@ -26,9 +29,10 @@
         mask="#.##"
         fill-mask="0"
         reverse-fill-mask
-        v-model="sellPrice"
+        v-model="editing.sellPrice"
         input-class="text-right"
         :label="$t('product.sellPrice')"
+        :readonly="readonlyMode"
         lazy-rules
         :rules="[
           (val) =>
@@ -37,15 +41,19 @@
         ]"
       />
       <div class="row justify-center">
-        <q-btn :label="$t('buttons.create')" type="submit" color="primary" />
+        <q-btn
+          v-if="!readonlyMode"
+          :label="$t('buttons.edit')"
+          type="submit"
+          color="primary"
+        />
       </div>
     </q-form>
   </side-panel>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { ref } from 'vue';
+import { ref, defineComponent, PropType, computed } from 'vue';
 import { useProductStore } from 'stores/product-store';
 import { useUserStore } from 'stores/user-store';
 import { IProduct } from 'src/models/product';
@@ -54,55 +62,45 @@ import { QForm } from 'quasar';
 import SidePanel from 'components/common/SidePanel.vue';
 
 export default defineComponent({
-  name: 'ProductCreation',
-  emits: ['close', 'productCreated', 'productCreationFailed'],
+  name: 'ProductEdit',
+  props: {
+    readonlyMode: {
+      type: Boolean,
+      default: false,
+    },
+    modelValue: {
+      type: Object as PropType<IProduct>,
+      required: true,
+    },
+  },
+  emits: ['close', 'update:modelValue', 'product-edit-failed'],
   components: { SidePanel },
 
-  setup(_, context) {
+  setup(props, context) {
     const form = ref<QForm>();
-    const reference = ref('');
-    const providerReference = ref('');
-    const sellPrice = ref(0.0);
-    const name = ref('');
+    const editing = computed(() => props.modelValue);
 
     const productStore = useProductStore();
     const userStore = useUserStore();
 
-    const resetValues = () => {
-      reference.value = '';
-      providerReference.value = '';
-      sellPrice.value = 0.0;
-      name.value = '';
-
-      form.value?.resetValidation();
-    };
-
     const onSubmit = async () => {
       try {
-        const product = {
-          reference: reference.value,
-          providerReference: providerReference.value,
-          sellPrice: sellPrice.value,
-          name: name.value,
-          quantity: 0,
-          storeId: userStore.currentStore,
-          lastChangeUserId: userStore.userData?.uid,
-        } as IProduct;
+        editing.value.lastChangeUserId = userStore.userData?.uid;
 
-        const createResult = await productStore.addProduct(product);
-        context.emit('productCreated', createResult);
-        resetValues();
+        await productStore.editProduct(editing.value);
+        context.emit('update:modelValue', editing.value);
       } catch (error) {
-        context.emit('productCreationFailed', error);
+        context.emit('product-edit-failed', error);
       }
     };
 
     return {
       form,
-      reference,
-      providerReference,
-      sellPrice,
-      name,
+      editing,
+      // reference,
+      // providerReference,
+      // sellPrice,
+      // name,
       onSubmit,
     };
   },

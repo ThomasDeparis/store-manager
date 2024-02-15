@@ -6,7 +6,7 @@ export interface IProduct {
   reference: string;
   providerReference?: string;
   storeId: string;
-  lastChangeUserId: string;
+  lastChangeUserId?: string;
 }
 
 export interface ProductListFilter {
@@ -17,4 +17,14 @@ export interface IProductState {
   products: IProduct[];
   error?: string | null;
   isLoading: boolean;
+}
+
+export interface IProductEdit {
+  id: string;
+  name: string;
+  reference: string;
+  sellPrice: number;
+  providerReference?: string;
+  lastChangeUserId?: string;
+  storeId: string;
 }

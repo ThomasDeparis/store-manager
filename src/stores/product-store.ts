@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { IProductState, IProduct } from 'models/product';
+import { IProductState, IProduct, IProductEdit } from 'models/product';
 import { IProductError, ProductErrorKey } from 'models/producterror';
 import { ErrorType } from 'models/errortype';
 import { db } from 'src/firebase.config';
@@ -10,6 +10,7 @@ import {
   getDocs,
   doc,
   setDoc,
+  updateDoc,
 } from 'firebase/firestore';
 
 export const useProductStore = defineStore('product', {
@@ -77,6 +78,45 @@ export const useProductStore = defineStore('product', {
       } catch (error: any) {
         const pError = {
           productReference: product.reference,
+          errorType: ErrorType.Technical,
+          message: error.toString(),
+        } as IProductError;
+
+        throw pError;
+      }
+    },
+    async editProduct(edited: IProductEdit) {
+      try {
+        const productDoc = doc(collection(db, 'products'), edited.id);
+
+        await updateDoc(productDoc, {
+          name: edited.name,
+          providerReference: edited.providerReference,
+          sellPrice: edited.sellPrice,
+          lastChangeUserId: edited.lastChangeUserId,
+        });
+
+        const i = this.products.findIndex(
+          (p) => p.id === edited.id && p.storeId === edited.storeId
+        );
+        if (i < 0) {
+          const error = {
+            productReference: edited.reference,
+            errorType: ErrorType.Technical,
+            message:
+              'productStore.editProduct : cannot find product in store to edit it',
+          } as IProductError;
+
+          throw error;
+        }
+        const storeProduct = this.products[i];
+        storeProduct.name = edited.name;
+        storeProduct.providerReference = edited.providerReference;
+        storeProduct.sellPrice = edited.sellPrice;
+        storeProduct.lastChangeUserId = edited.lastChangeUserId;
+      } catch (error: any) {
+        const pError = {
+          productReference: edited.reference,
           errorType: ErrorType.Technical,
           message: error.toString(),
         } as IProductError;

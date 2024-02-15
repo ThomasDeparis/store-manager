@@ -1,56 +1,104 @@
 <template>
   <q-page>
     <product-grid
-      @new-product-click="newProductPanelOpen = true"
+      @new-product-click="openSidePanel('new', emptyRow)"
+      @edit-row-click="(row) => openSidePanel('edit', row)"
+      @detail-row-click="(row) => openSidePanel('detail', row)"
     ></product-grid>
   </q-page>
 
-  <q-drawer v-model="newProductPanelOpen" side="right" bordered>
+  <q-drawer :model-value="sidePanel === 'new'" side="right" bordered>
     <product-creation
       @productCreated="handleNewProduct"
-      @productCreationFailed="handleNewProductFail"
-      @close="newProductPanelOpen = false"
+      @productCreationFailed="handleTechnicalError"
+      @close="closeSidePanel"
     ></product-creation>
   </q-drawer>
 
-  <q-drawer v-model="editProductPanelOpen" side="right" bordered>
-    <product-edit @close="editProductPanelOpen = false"></product-edit>
+  <q-drawer
+    :model-value="sidePanel === 'edit' || sidePanel === 'detail'"
+    side="right"
+    bordered
+  >
+    <product-edit
+      v-model="editingRow"
+      :readonly-mode="sidePanel === 'detail'"
+      @close="closeSidePanel"
+      @update:model-value="handleProductEdited"
+      @product-edit-failed="handleTechnicalError"
+    />
   </q-drawer>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import ProductGrid from 'components/product/ProductGrid.vue';
 
 import ProductCreation from 'components/product/ProductCreation.vue';
+import ProductEdit from 'components/product/ProductEdit.vue';
 
 import { handleProductError } from 'utils/product-error-handler';
 import useNotifyHandler from 'hooks/notify-handler';
 import { IProductError } from 'src/models/producterror';
+import { IProduct } from 'src/models/product';
 
 export default defineComponent({
   name: 'ProductsPage',
-  components: { ProductGrid, ProductCreation },
+  components: { ProductGrid, ProductCreation, ProductEdit },
   setup() {
     const { t } = useI18n();
     const notifier = useNotifyHandler();
-    const newProductPanelOpen = ref(false);
-    const editProductPanelOpen = ref(false);
 
-    const handleNewProductFail = (error: IProductError) =>
+    const emptyRow: IProduct = {
+      id: '',
+      name: '',
+      quantity: 0,
+      sellPrice: 0,
+      reference: '',
+      storeId: '',
+      providerReference: '',
+      lastChangeUserId: '',
+    };
+
+    const editingRow = ref<IProduct>(emptyRow);
+
+    type PanelMode = 'new' | 'edit' | 'detail' | null;
+    var sidePanel: Ref<PanelMode> = ref(null);
+
+    const openSidePanel = (mode: PanelMode, row: IProduct) => {
+      sidePanel.value = mode;
+      let rowCopy = Object.create(row);
+      editingRow.value = rowCopy;
+    };
+
+    const closeSidePanel = () => {
+      sidePanel.value = null;
+      editingRow.value = emptyRow;
+    };
+
+    const handleTechnicalError = (error: IProductError) =>
       notifier.NotifyError(handleProductError(error));
 
     const handleNewProduct = () => {
       notifier.NotifySuccess(t('product.created'));
     };
 
+    const handleProductEdited = () => {
+      notifier.NotifySuccess(t('product.edited'));
+      closeSidePanel();
+    };
+
     return {
-      newProductPanelOpen,
-      editProductPanelOpen,
-      handleNewProductFail,
+      handleTechnicalError,
       handleNewProduct,
+      handleProductEdited,
+      sidePanel,
+      openSidePanel,
+      closeSidePanel,
+      emptyRow,
+      editingRow,
     };
   },
 });

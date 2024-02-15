@@ -13,7 +13,7 @@
         <q-btn
           color="primary"
           :label="$t('product.newProduct')"
-          @click="addRow"
+          @click="$emit('new-product-click')"
         />
         <q-space />
         <q-input dense debounce="300" color="primary" v-model="filter">
@@ -23,6 +23,7 @@
         </q-input>
       </template>
 
+      <!-- définition des boutons dans la colonne 'actions' -->
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
           <q-btn-group> </q-btn-group>
@@ -33,7 +34,7 @@
             round
             color="amber-7"
             size="sm"
-            tooltip="coucou"
+            @click="$emit('edit-row-click', props.row)"
           >
             <q-tooltip>
               <div class="text-body2">Éditer</div>
@@ -46,6 +47,7 @@
             round
             color="primary"
             size="sm"
+            @click="$emit('detail-row-click', props.row)"
           >
             <q-tooltip>
               <div class="text-body2">Détail</div>
@@ -72,9 +74,9 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'ProductGrid',
-  emits: ['newProductClick'],
+  emits: ['new-product-click', 'edit-row-click', 'detail-row-click'],
 
-  setup(_, context) {
+  setup() {
     const { t } = useI18n();
     const productsStore = useProductStore();
     const user = useUserStore();
@@ -126,17 +128,12 @@ export default defineComponent({
       });
     });
 
-    const addRow = () => {
-      context.emit('newProductClick');
-    };
-
     return {
       filter: ref(''),
       columns,
       rows: productsRows,
       loadProducts,
       loading: productsStore.isLoading,
-      addRow,
     };
   },
 });

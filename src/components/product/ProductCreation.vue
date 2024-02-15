@@ -55,7 +55,7 @@ import SidePanel from 'components/common/SidePanel.vue';
 
 export default defineComponent({
   name: 'ProductCreation',
-  emits: ['close', 'productCreated', 'productCreationFailed'],
+  emits: ['close', 'product-created', 'product-creation-failed'],
   components: { SidePanel },
 
   setup(_, context) {
@@ -90,10 +90,10 @@ export default defineComponent({
         } as IProduct;
 
         const createResult = await productStore.addProduct(product);
-        context.emit('productCreated', createResult);
+        context.emit('product-created', createResult);
         resetValues();
       } catch (error) {
-        context.emit('productCreationFailed', error);
+        context.emit('product-creation-failed', error);
       }
     };
 
