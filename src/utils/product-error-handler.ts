@@ -1,4 +1,7 @@
-import { IProductError, ProductErrorKey } from 'models/producterror';
+import {
+  IProductError,
+  ProductErrorKey,
+} from 'src/models/product/producterror';
 import { ErrorType } from 'models/errortype';
 import { t } from 'src/i18n';
 

@@ -48,7 +48,7 @@ import { defineComponent } from 'vue';
 import { ref } from 'vue';
 import { useProductStore } from 'stores/product-store';
 import { useUserStore } from 'stores/user-store';
-import { IProduct } from 'src/models/product';
+import { IProduct } from 'src/models/product/product';
 import { QForm } from 'quasar';
 
 import SidePanel from 'components/common/SidePanel.vue';

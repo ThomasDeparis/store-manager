@@ -1,4 +1,4 @@
-import { ErrorType } from './errortype';
+import { ErrorType } from '../errortype';
 
 export enum ProductErrorKey {
   ReferenceExists,

@@ -39,5 +39,6 @@ export default {
   menu: {
     menu: 'Menu',
     products: 'Produits',
+    providers: 'Fournisseurs',
   },
 };

@@ -1,5 +1,5 @@
 <template>
-  <side-panel :title="$t('product.detail')" @close="$emit('close')">
+  <side-panel :title="$t('provider.detail')" @close="$emit('close')">
     <div class="row">
       <q-toggle
         class=""
@@ -14,42 +14,26 @@
     <q-form @submit="onSubmit" ref="form" class="q-gutter-md q-pa-sm">
       <q-input
         filled
-        v-model="editing.reference"
-        :label="$t('product.reference')"
-        readonly
-        lazy-rules
-        :rules="[(val) => (val && val.length > 0) || $t('forms.mandatory')]"
-      />
-      <q-input
-        filled
-        v-model="editing.providerReference"
+        v-model="editing.email"
         :readonly="isReadonly"
-        :label="$t('product.providerReference')"
+        :label="$t('provider.email')"
       />
       <q-input
         filled
         v-model="editing.name"
-        :label="$t('product.name')"
+        :label="$t('provider.name')"
         :readonly="isReadonly"
         lazy-rules
         :rules="[(val) => (val && val.length > 0) || $t('forms.mandatory')]"
       />
       <q-input
         filled
-        suffix="€"
-        mask="#.##"
-        fill-mask="0"
+        prefix="+33"
+        mask="# ## ## ## ##"
         reverse-fill-mask
-        v-model="editing.sellPrice"
-        input-class="text-right"
-        :label="$t('product.sellPrice')"
+        v-model="editing.phone"
+        :label="$t('provider.phone')"
         :readonly="isReadonly"
-        lazy-rules
-        :rules="[
-          (val) =>
-            (val !== null && val !== '' && val > 0) ||
-            $t('product.enterValidSellPrice'),
-        ]"
       />
       <div class="row justify-center">
         <q-btn
@@ -65,21 +49,21 @@
 
 <script lang="ts">
 import { toRef, defineComponent, PropType, computed, watchEffect } from 'vue';
-import { useProductStore } from 'stores/product-store';
+import { useProviderStore } from 'stores/provider-store';
 import { useUserStore } from 'stores/user-store';
-import { IProduct } from 'src/models/product/product';
+import { IProvider } from 'src/models/provider/provider';
 
 import SidePanel from 'components/common/SidePanel.vue';
 
 export default defineComponent({
-  name: 'ProductEdit',
+  name: 'ProviderEdit',
   props: {
     readonlyMode: {
       type: Boolean,
       default: false,
     },
     modelValue: {
-      type: Object as PropType<IProduct>,
+      type: Object as PropType<IProvider>,
       required: true,
     },
   },
@@ -87,7 +71,7 @@ export default defineComponent({
     'close',
     'update:modelValue',
     'update:readonlyMode',
-    'product-edit-failed',
+    'provider-edit-failed',
   ],
   components: { SidePanel },
 
@@ -97,17 +81,17 @@ export default defineComponent({
     const isReadonly = toRef(props.readonlyMode);
     watchEffect(() => (isReadonly.value = props.readonlyMode));
 
-    const productStore = useProductStore();
+    const providerStore = useProviderStore();
     const userStore = useUserStore();
 
     const onSubmit = async () => {
       try {
         editing.value.lastChangeUserId = userStore.userData?.uid;
 
-        await productStore.editProduct(editing.value);
+        await providerStore.editProvider(editing.value);
         context.emit('update:modelValue', editing.value);
       } catch (error) {
-        context.emit('product-edit-failed', error);
+        context.emit('provider-edit-failed', error);
       }
     };
 

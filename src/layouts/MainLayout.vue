@@ -25,7 +25,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" side="left" show-if-above bordered>
+    <q-drawer v-model="leftDrawerOpen" side="left" bordered>
       <q-list>
         <q-item-label header> Menu </q-item-label>
 
@@ -71,6 +71,12 @@ export default defineComponent({
         caption: '',
         icon: 'school',
         routeName: 'products',
+      },
+      {
+        title: t('menu.providers'),
+        caption: '',
+        icon: 'school',
+        routeName: 'providers',
       },
     ];
 

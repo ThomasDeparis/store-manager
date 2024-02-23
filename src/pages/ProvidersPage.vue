@@ -1,18 +1,18 @@
 <template>
   <q-page>
-    <product-grid
-      @new-product-click="openSidePanel('new', emptyRow)"
+    <provider-grid
+      @new-provider-click="openSidePanel('new', emptyRow)"
       @edit-row-click="(row) => openSidePanel('edit', row)"
       @detail-row-click="(row) => openSidePanel('detail', row)"
-    ></product-grid>
+    ></provider-grid>
   </q-page>
 
   <q-drawer :model-value="sidePanel === 'new'" side="right" bordered>
-    <product-creation
-      @productCreated="handleNewProduct"
-      @productCreationFailed="handleTechnicalError"
+    <provider-creation
+      @providerCreated="handleNewProvider"
+      @providerCreationFailed="handleTechnicalError"
       @close="closeSidePanel"
-    ></product-creation>
+    ></provider-creation>
   </q-drawer>
 
   <q-drawer
@@ -20,13 +20,13 @@
     side="right"
     bordered
   >
-    <product-edit
+    <provider-edit
       v-model="editingRow"
       :readonly-mode="readonlyEditMode"
       @close="closeSidePanel"
-      @update:model-value="handleProductEdited"
+      @update:model-value="handleProviderEdited"
       @update:readonly-mode="handleEditModeChanged"
-      @product-edit-failed="handleTechnicalError"
+      @provider-edit-failed="handleTechnicalError"
     />
   </q-drawer>
 </template>
@@ -35,40 +35,38 @@
 import { defineComponent, ref, Ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import ProductGrid from 'components/product/ProductGrid.vue';
+import ProviderGrid from 'components/provider/ProviderGrid.vue';
 
-import ProductCreation from 'components/product/ProductCreation.vue';
-import ProductEdit from 'components/product/ProductEdit.vue';
+import ProviderCreation from 'components/provider/ProviderCreation.vue';
+import ProviderEdit from 'components/provider/ProviderEdit.vue';
 
-import { handleProductError } from 'utils/product-error-handler';
+import { handleProviderError } from 'utils/provider-error-handler';
 import useNotifyHandler from 'hooks/notify-handler';
-import { IProductError } from 'src/models/product/producterror';
-import { IProduct } from 'src/models/product/product';
+import { IProviderError } from 'src/models/provider/providererror';
+import { IProvider } from 'src/models/provider/provider';
 
 export default defineComponent({
-  name: 'ProductsPage',
-  components: { ProductGrid, ProductCreation, ProductEdit },
+  name: 'ProvidersPage',
+  components: { ProviderGrid, ProviderCreation, ProviderEdit },
   setup() {
     const { t } = useI18n();
     const notifier = useNotifyHandler();
 
-    const emptyRow: IProduct = {
+    const emptyRow: IProvider = {
       id: '',
       name: '',
-      quantity: 0,
-      sellPrice: 0,
-      reference: '',
       storeId: '',
-      providerReference: '',
       lastChangeUserId: '',
+      email: '',
+      phone: '',
     };
 
-    const editingRow = ref<IProduct>(emptyRow);
+    const editingRow = ref<IProvider>(emptyRow);
 
     type PanelMode = 'new' | 'edit' | 'detail' | null;
     var sidePanel: Ref<PanelMode> = ref(null);
 
-    const openSidePanel = (mode: PanelMode, row: IProduct) => {
+    const openSidePanel = (mode: PanelMode, row: IProvider) => {
       sidePanel.value = mode;
       let rowCopy = Object.create(row);
       editingRow.value = rowCopy;
@@ -85,22 +83,22 @@ export default defineComponent({
       sidePanel.value = newEditMode ? 'edit' : 'detail';
     };
 
-    const handleTechnicalError = (error: IProductError) =>
-      notifier.NotifyError(handleProductError(error));
+    const handleTechnicalError = (error: IProviderError) =>
+      notifier.NotifyError(handleProviderError(error));
 
-    const handleNewProduct = () => {
-      notifier.NotifySuccess(t('product.created'));
+    const handleNewProvider = () => {
+      notifier.NotifySuccess(t('provider.created'));
     };
 
-    const handleProductEdited = () => {
-      notifier.NotifySuccess(t('product.edited'));
+    const handleProviderEdited = () => {
+      notifier.NotifySuccess(t('provider.edited'));
       closeSidePanel();
     };
 
     return {
       handleTechnicalError,
-      handleNewProduct,
-      handleProductEdited,
+      handleNewProvider,
+      handleProviderEdited,
       sidePanel,
       openSidePanel,
       closeSidePanel,

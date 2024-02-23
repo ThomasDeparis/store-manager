@@ -1,6 +1,13 @@
 import { defineStore } from 'pinia';
-import { IProductState, IProduct, IProductEdit } from 'models/product';
-import { IProductError, ProductErrorKey } from 'models/producterror';
+import {
+  IProductState,
+  IProduct,
+  IProductEdit,
+} from 'src/models/product/product';
+import {
+  IProductError,
+  ProductErrorKey,
+} from 'src/models/product/producterror';
 import { ErrorType } from 'models/errortype';
 import { db } from 'src/firebase.config';
 import {
@@ -37,7 +44,7 @@ export const useProductStore = defineStore('product', {
           providerReference: p.data().providerReference,
           storeId: p.data().storeId,
           lastChangeUserId: p.data().lastChangeUserId,
-        };
+        } as IProduct;
       });
       this.isLoading = false;
     },
@@ -109,6 +116,8 @@ export const useProductStore = defineStore('product', {
 
           throw error;
         }
+        console.log(edited);
+        console.log(edited.sellPrice);
         const storeProduct = this.products[i];
         storeProduct.name = edited.name;
         storeProduct.providerReference = edited.providerReference;
