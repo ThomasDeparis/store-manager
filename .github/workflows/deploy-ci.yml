@@ -5,38 +5,37 @@ name: Deploy CI
 
 on:
   push:
-    branches: [ "deploy-ci", "master" ]
+    branches: ['master', 'dev']
   pull_request:
-    branches: [ "deploy-ci", "master" ]
+    branches: ['master', 'dev']
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     #strategy:
-      #matrix:
-        #node-version: [14.x, 16.x, 18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    #matrix:
+    #node-version: [14.x, 16.x, 18.x]
+    # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js 16.14.2
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16.14.2
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build
-    - name: Pushes to github page for hosting
-      uses: cpina/github-action-push-to-another-repository@main
-      env:
-        SSH_DEPLOY_KEY: ${{ secrets.SSH_CI_DEPLOY_KEY }}
-      with:
-        source-directory: dist/spa/
-        destination-github-username: 'thomasdeparis'
-        destination-repository-name: 'store-manager'
-        user-email: ${{ secrets.CI_DEPLOY_EMAIL }}
-        commit-message: pushed fromdeploy-ci action
-        target-branch: gh-pages
-        create-target-branch-if-needed: true
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16.14.2
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.14.2
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - name: Pushes to github page for hosting
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_CI_DEPLOY_KEY }}
+        with:
+          source-directory: dist/spa/
+          destination-github-username: 'thomasdeparis'
+          destination-repository-name: 'store-manager'
+          user-email: ${{ secrets.CI_DEPLOY_EMAIL }}
+          commit-message: auto CI deploy from last commit/pr
+          target-branch: gh-pages
+          create-target-branch-if-needed: true
