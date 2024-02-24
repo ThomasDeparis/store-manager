@@ -5,9 +5,9 @@ name: Deploy CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "deploy-ci", "master" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "deploy-ci", "master" ]
 
 jobs:
   build:
