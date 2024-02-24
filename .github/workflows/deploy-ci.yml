@@ -29,14 +29,14 @@ jobs:
     - run: npm ci
     - run: npm run build
     - name: Pushes to github page for hosting
-        uses: cpina/github-action-push-to-another-repository@main
-        env:
-          SSH_DEPLOY_KEY: ${{ secrets.CI_DEPLOY_KEY }}
-        with:
-          source-directory: dist/spa/
-          destination-github-username: 'thomasdeparis'
-          destination-repository-name: 'store-manager'
-          user-email: ${{ secrets.CI_DEPLOY_EMAIL }}
-          commit-message: pushed fromdeploy-ci action
-          target-branch: gh-pages
-          create-target-branch-if-needed: true
+      uses: cpina/github-action-push-to-another-repository@main
+      env:
+        SSH_DEPLOY_KEY: ${{ secrets.CI_DEPLOY_KEY }}
+      with:
+        source-directory: dist/spa/
+        destination-github-username: 'thomasdeparis'
+        destination-repository-name: 'store-manager'
+        user-email: ${{ secrets.CI_DEPLOY_EMAIL }}
+        commit-message: pushed fromdeploy-ci action
+        target-branch: gh-pages
+        create-target-branch-if-needed: true
