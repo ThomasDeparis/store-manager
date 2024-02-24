@@ -48,7 +48,6 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
-      publicPath: 'https://thomasdeparis.github.io/store-manager/',
       target: {
         browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
         node: 'node16',
@@ -75,12 +74,9 @@ module.exports = configure(function (/* ctx */) {
       // polyfillModulePreload: true,
       // distDir
 
-      // extendViteConf(viteConf) {
-      //   Object.assign(viteConf.resolve.alias, {
-      //     models: path.join(__dirname, './src/models'),
-      //     utils: path.join(__dirname, './src/utils'),
-      //   });
-      // },
+      extendViteConf(viteConf) {
+        viteConf.base = 'https://thomasdeparis.github.io/store-manager/';
+      },
       // viteVuePluginOptions: {},
 
       vitePlugins: [
