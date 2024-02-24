@@ -58,14 +58,14 @@ module.exports = configure(function (/* ctx */) {
         hooks: path.join(__dirname, './src/hooks'),
       },
 
-      vueRouterMode: 'history', // available values: 'hash', 'history'
+      vueRouterMode: 'hash', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,
 
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
-      // publicPath: '/',
+      publicPath: 'https://thomasdeparis.github.io/store-manager/',
       // analyze: true,
       // env: {},
       // rawDefine: {}
@@ -74,9 +74,9 @@ module.exports = configure(function (/* ctx */) {
       // polyfillModulePreload: true,
       // distDir
 
-      extendViteConf(viteConf) {
-        viteConf.base = 'https://thomasdeparis.github.io/store-manager/';
-      },
+      // extendViteConf(viteConf) {
+      //   viteConf.base = 'https://thomasdeparis.github.io/store-manager/';
+      // },
       // viteVuePluginOptions: {},
 
       vitePlugins: [
