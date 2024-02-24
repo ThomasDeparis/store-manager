@@ -27,4 +27,4 @@ jobs:
         node-version: 16.14.2
         cache: 'npm'
     - run: npm ci
-    - run: quasar build
+    - run: npm run dev
