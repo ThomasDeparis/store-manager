@@ -10,7 +10,7 @@
 const { configure } = require('quasar/wrappers');
 const path = require('path');
 
-module.exports = configure(function (/* ctx */) {
+module.exports = configure(function (ctx) {
   return {
     eslint: {
       // fix: true,
@@ -65,7 +65,9 @@ module.exports = configure(function (/* ctx */) {
 
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
-      publicPath: 'https://thomasdeparis.github.io/store-manager/',
+      publicPath: ctx.prod
+        ? 'https://thomasdeparis.github.io/store-manager/'
+        : '/',
       // analyze: true,
       // env: {},
       // rawDefine: {}

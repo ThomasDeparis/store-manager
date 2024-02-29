@@ -7,6 +7,8 @@ export default {
     reset: 'Reset',
     create: 'Créer',
     edit: 'Modifier',
+    detail: 'Détail',
+    order: 'Commander',
   },
   forms: {
     mandatory: 'Champ obligatoire',
@@ -14,6 +16,7 @@ export default {
     yourPassword: 'Votre mot de passe',
     repeatPassword: 'Répétez le mot de passe',
     repeatCorrectlyPassword: 'Répétez correctement le mot de passe',
+    editMode: 'Mode édition',
   },
   auth: {
     badLogin: 'Identifiants incorrects',
@@ -21,6 +24,7 @@ export default {
     loginOk: 'Connecté',
     loginAction: 'Se connecter',
     signUpAction: "S'inscrire",
+    weakPassword: 'Le mot de passe doit contenir au moins 6 caractères',
   },
   product: {
     referenceExists: 'Cette référence produit existe déjà',
@@ -35,6 +39,13 @@ export default {
     enterValidSellPrice: 'Entrer un prix de vente valide',
     newProduct: 'Nouveau produit',
     detail: 'Détail produit',
+  },
+  provider: {
+    newProvider: 'Nouveau fournisseur',
+    name: 'Nom',
+    phone: 'Téléphone',
+    email: 'Email',
+    detail: 'Détail fournisseur',
   },
   menu: {
     menu: 'Menu',

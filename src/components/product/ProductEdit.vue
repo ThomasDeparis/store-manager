@@ -5,7 +5,7 @@
         class=""
         :model-value="isReadonly"
         color="green"
-        label="mode édition"
+        :label="$t('forms.editMode')"
         :true-value="false"
         :false-value="true"
         @update:model-value="$emit('update:readonlyMode', isReadonly)"
@@ -94,7 +94,7 @@ export default defineComponent({
   setup(props, context) {
     const editing = computed(() => props.modelValue);
 
-    const isReadonly = toRef(props.readonlyMode);
+    const isReadonly = toRef<boolean>(props.readonlyMode);
     watchEffect(() => (isReadonly.value = props.readonlyMode));
 
     const productStore = useProductStore();

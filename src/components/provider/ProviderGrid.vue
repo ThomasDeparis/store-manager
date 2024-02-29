@@ -26,7 +26,6 @@
       <!-- définition des boutons dans la colonne 'actions' -->
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <q-btn-group> </q-btn-group>
           <q-btn
             class="q-mr-sm"
             icon="edit"
@@ -37,7 +36,7 @@
             @click="$emit('edit-row-click', props.row)"
           >
             <q-tooltip>
-              <div class="text-body2">Éditer</div>
+              <div class="text-body2">{{ $t('buttons.edit') }}</div>
             </q-tooltip>
           </q-btn>
           <q-btn
@@ -50,7 +49,20 @@
             @click="$emit('detail-row-click', props.row)"
           >
             <q-tooltip>
-              <div class="text-body2">Détail</div>
+              <div class="text-body2">{{ $t('buttons.detail') }}</div>
+            </q-tooltip>
+          </q-btn>
+          <q-btn
+            icon="shopping_cart"
+            class="q-mr-sm"
+            push
+            round
+            color="green"
+            size="sm"
+            @click="$emit('order-row-click', props.row)"
+          >
+            <q-tooltip>
+              <div class="text-body2">{{ $t('buttons.order') }}</div>
             </q-tooltip>
           </q-btn>
         </q-td>
@@ -69,7 +81,12 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'ProviderGrid',
-  emits: ['new-provider-click', 'edit-row-click', 'detail-row-click'],
+  emits: [
+    'new-provider-click',
+    'edit-row-click',
+    'detail-row-click',
+    'order-row-click',
+  ],
 
   setup() {
     const { t } = useI18n();
@@ -90,12 +107,12 @@ export default defineComponent({
       },
       {
         name: 'phone',
-        label: 'Téléphone',
+        label: t('provider.phone'),
         field: 'phone',
       },
       {
         name: 'email',
-        label: 'email',
+        label: t('provider.email'),
         field: 'email',
         sortable: true,
       },

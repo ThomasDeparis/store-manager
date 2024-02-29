@@ -1,6 +1,7 @@
 <template>
   <div class="q-pa-md">
     <q-table
+      class="body--light"
       grid-header
       bordered
       :rows="rows"
@@ -26,7 +27,6 @@
       <!-- définition des boutons dans la colonne 'actions' -->
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <q-btn-group> </q-btn-group>
           <q-btn
             class="q-mr-sm"
             icon="edit"
