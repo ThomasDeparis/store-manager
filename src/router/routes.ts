@@ -25,6 +25,17 @@ const routes: RouteRecordRaw[] = [
         path: 'signin',
         component: () => import('pages/SignIn.vue'),
       },
+      {
+        name: 'provider-neworder',
+        path: '/providers/:providerId/orders/new',
+        component: () => import('pages/NewOrderPage.vue'),
+        props: true,
+      },
+      {
+        name: 'neworder',
+        path: '/orders/new',
+        component: () => import('pages/NewOrderPage.vue'),
+      },
     ],
   },
 

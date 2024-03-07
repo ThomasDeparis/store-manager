@@ -4,6 +4,7 @@
       @new-provider-click="openSidePanel('new', emptyRow)"
       @edit-row-click="(row) => openSidePanel('edit', row)"
       @detail-row-click="(row) => openSidePanel('detail', row)"
+      @order-row-click="(row) => openNewOrder(row)"
     ></provider-grid>
   </q-page>
 
@@ -34,6 +35,7 @@
 <script lang="ts">
 import { defineComponent, ref, Ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 import ProviderGrid from 'components/provider/ProviderGrid.vue';
 
@@ -45,12 +47,18 @@ import useNotifyHandler from 'hooks/notify-handler';
 import { IProviderError } from 'src/models/provider/providererror';
 import { IProvider } from 'src/models/provider/provider';
 
+import { useDialogPluginComponent } from 'quasar';
+
 export default defineComponent({
   name: 'ProvidersPage',
   components: { ProviderGrid, ProviderCreation, ProviderEdit },
+  emits: [...useDialogPluginComponent.emits],
   setup() {
     const { t } = useI18n();
+    const router = useRouter();
     const notifier = useNotifyHandler();
+    const dialogOpened = ref(false);
+    const selectedProvider = ref();
 
     const emptyRow: IProvider = {
       id: '',
@@ -95,6 +103,13 @@ export default defineComponent({
       closeSidePanel();
     };
 
+    const openNewOrder = (selectedProvider: IProvider) => {
+      router.push({
+        name: 'provider-neworder',
+        params: { providerId: selectedProvider.id },
+      });
+    };
+
     return {
       handleTechnicalError,
       handleNewProvider,
@@ -106,6 +121,9 @@ export default defineComponent({
       editingRow,
       readonlyEditMode,
       handleEditModeChanged,
+      dialogOpened,
+      selectedProvider,
+      openNewOrder,
     };
   },
 });

@@ -136,7 +136,7 @@ export default defineComponent({
       columns,
       rows: providersRows,
       loadProviders,
-      loading: providersStore.isLoading,
+      loading: computed(() => providersStore.isLoading),
     };
   },
 });

@@ -1,3 +1,13 @@
+import { Timestamp } from 'firebase/firestore';
+
+export interface IProductStockLog {
+  id: string;
+  type: string;
+  quantity: number;
+  date: Timestamp;
+  documentId?: string;
+}
+
 export interface IProduct {
   id: string;
   name: string;
@@ -7,6 +17,7 @@ export interface IProduct {
   providerReference?: string;
   storeId: string;
   lastChangeUserId?: string;
+  stockLogs: IProductStockLog[];
 }
 
 export interface ProductListFilter {
