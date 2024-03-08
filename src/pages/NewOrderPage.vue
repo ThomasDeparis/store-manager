@@ -93,6 +93,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, Ref, watch, watchEffect } from 'vue';
+import { useRouter } from 'vue-router';
 
 import OrderGrid from 'components/provider/OrderGrid.vue';
 import OrderCart from 'components/provider/OrderCart.vue';
@@ -102,8 +103,12 @@ import { useProviderStore } from 'src/stores/provider-store';
 import { IProduct } from 'src/models/product/product';
 import { IOrder, IOrderRow } from 'src/models/order/order';
 import { useUserStore } from 'src/stores/user-store';
-import moment from 'moment';
 import { useOrderStore } from 'src/stores/order-store';
+
+import useNotifyHandler from 'src/hooks/notify-handler';
+import moment from 'moment';
+import { t } from 'src/i18n';
+import { handleOrderError } from 'src/utils/order-error-handler';
 
 export default defineComponent({
   name: 'NewOrderPage',
@@ -115,10 +120,12 @@ export default defineComponent({
     },
   },
 
-  setup(props, context) {
+  setup(props) {
     const userStore = useUserStore();
     const providerStore = useProviderStore();
     const orderStore = useOrderStore();
+    const notifier = useNotifyHandler();
+    const router = useRouter();
 
     //load providers list after user is loaded
     watch(
@@ -149,7 +156,6 @@ export default defineComponent({
     const orderDate = ref('');
 
     const orderDateRange = (date: string) => {
-      console.log(date);
       return moment(date, 'YYYY/MM/DD') <= moment();
     };
 
@@ -186,11 +192,11 @@ export default defineComponent({
           storeId: userStore.currentStore,
         } as IOrder;
 
-        const createResult = await orderStore.addOrder(order);
-        context.emit('provider-created', createResult);
-      } catch (error) {
-        console.log(error);
-        context.emit('provider-creation-failed', error);
+        await orderStore.addOrder(order);
+        notifier.NotifySuccess(t('order.created'));
+        router.push({ name: 'orders' });
+      } catch (error: any) {
+        notifier.NotifyError(handleOrderError(error));
       }
     };
 

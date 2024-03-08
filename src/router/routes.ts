@@ -26,14 +26,19 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/SignIn.vue'),
       },
       {
+        name: 'orders',
+        path: 'orders',
+        component: () => import('pages/OrdersPage.vue'),
+      },
+      {
         name: 'provider-neworder',
-        path: '/providers/:providerId/orders/new',
+        path: 'providers/:providerId/orders/new',
         component: () => import('pages/NewOrderPage.vue'),
         props: true,
       },
       {
         name: 'neworder',
-        path: '/orders/new',
+        path: 'orders/new',
         component: () => import('pages/NewOrderPage.vue'),
       },
     ],

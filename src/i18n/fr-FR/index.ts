@@ -60,6 +60,7 @@ export default {
     price: "Prix d'achat",
     enterValidBuyPrice: "Entrer un prix d'achat valide",
     enterValidQuantity: 'Entrer une quantité valide',
+    created: 'Commande fournisseur créée avec succès',
   },
   menu: {
     menu: 'Menu',

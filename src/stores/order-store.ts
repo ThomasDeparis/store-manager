@@ -1,10 +1,9 @@
 import { defineStore } from 'pinia';
 import { IOrder } from 'src/models/order/order';
-// import { IOrderError } from 'models/order/ordererror';
 import { ErrorType } from 'models/errortype';
 import { db } from 'src/firebase.config';
 import { collection, doc, setDoc, addDoc, Timestamp } from 'firebase/firestore';
-import { IProviderError } from 'src/models/provider/providererror';
+import { IOrderError } from 'src/models/order/ordererror';
 
 export const useOrderStore = defineStore('order', {
   state: () => {
@@ -31,10 +30,10 @@ export const useOrderStore = defineStore('order', {
       } catch (error: any) {
         console.log(error);
         const pError = {
-          productReference: order.reference,
+          orderReference: order.reference,
           errorType: ErrorType.Technical,
           message: error.toString(),
-        } as IProviderError;
+        } as IOrderError;
 
         throw pError;
       }
