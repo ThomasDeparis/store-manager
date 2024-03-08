@@ -148,7 +148,7 @@ export default defineComponent({
     const reference = ref('');
     const orderDate = ref('');
 
-    const orderDateRange = (date: any) => {
+    const orderDateRange = (date: string) => {
       console.log(date);
       return moment(date, 'YYYY/MM/DD') <= moment();
     };
