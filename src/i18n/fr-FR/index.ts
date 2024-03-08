@@ -2,6 +2,7 @@ export default {
   common: {
     technicalError:
       'Une erreur technique est survenue. Réessayer plus tard ou contacter le support',
+    dateFormat: 'Format jj/mm/aaaa',
   },
   buttons: {
     reset: 'Reset',
@@ -9,6 +10,7 @@ export default {
     edit: 'Modifier',
     detail: 'Détail',
     order: 'Commander',
+    close: 'Fermer',
   },
   forms: {
     mandatory: 'Champ obligatoire',
@@ -46,6 +48,18 @@ export default {
     phone: 'Téléphone',
     email: 'Email',
     detail: 'Détail fournisseur',
+  },
+  order: {
+    newOrder: 'Nouvelle commande fournisseur',
+    reference: 'Référence commande',
+    orderDate: 'Date de la commande',
+    provider: 'Fournisseur',
+    addedProducts: 'produits ajoutés',
+    cartContent: 'Contenu de la commande',
+    quantity: 'Quantité',
+    price: "Prix d'achat",
+    enterValidBuyPrice: "Entrer un prix d'achat valide",
+    enterValidQuantity: 'Entrer une quantité valide',
   },
   menu: {
     menu: 'Menu',

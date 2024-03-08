@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <h4>Nouvelle commande fournisseur</h4>
+    <h4>{{ $t('order.newOrder') }}</h4>
     <q-form ref="orderForm" @submit.prevent="onSubmit">
       <div class="row">
         <div class="col-8">
@@ -20,9 +20,9 @@
               <q-input
                 filled
                 mask="##/##/####"
-                hint="Format jj/mm/aaaa"
+                :hint="$t('common.dateFormat')"
                 v-model="orderDate"
-                label="Date de la commande"
+                :label="$t('order.orderDate')"
                 :rules="[
                   (val) => (val && val.length > 0) || $t('forms.mandatory'),
                 ]"
@@ -34,11 +34,15 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="orderDate" mask="DD/MM/YYYY">
+                      <q-date
+                        v-model="orderDate"
+                        mask="DD/MM/YYYY"
+                        :options="orderDateRange"
+                      >
                         <div class="row items-center justify-end">
                           <q-btn
                             v-close-popup
-                            label="Close"
+                            :label="$t('buttons.close')"
                             color="primary"
                             flat
                           />
@@ -55,7 +59,7 @@
               filled
               v-model="selectedProvider"
               :options="providersList"
-              label="order.providers"
+              :label="$t('order.provider')"
               :option-value="(p) => p?.id"
               :option-label="(p) => p?.name"
               lazy-rules
@@ -70,7 +74,7 @@
             class="col-3"
             color="primary"
           >
-            Commander</q-btn
+            {{ $t('buttons.order') }}</q-btn
           >
         </div>
       </div>
@@ -79,7 +83,7 @@
           <order-grid v-model="selectedProducts"></order-grid>
         </div>
         <div class="col-4 q-pa-sm">
-          {{ cartContent?.length || 0 }} produits ajoutés
+          {{ cartContent?.length || 0 }} {{ $t('order.addedProducts') }}
           <order-cart v-model="cartContent"></order-cart>
         </div>
       </div>
@@ -143,6 +147,12 @@ export default defineComponent({
 
     const reference = ref('');
     const orderDate = ref('');
+
+    const orderDateRange = (date: any) => {
+      console.log(date);
+      return moment(date, 'YYYY/MM/DD') <= moment();
+    };
+
     const selectedProducts: Ref<IProduct[]> = ref([]);
     const cartContent: Ref<IOrderRow[]> = ref([]);
     const orderForm = ref(null);
@@ -189,6 +199,7 @@ export default defineComponent({
       selectedProvider,
       reference,
       orderDate,
+      orderDateRange,
       providersList: computed(() => providerStore.providers),
       onSubmit,
       selectedProducts,

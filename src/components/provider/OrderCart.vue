@@ -1,6 +1,6 @@
 <template>
   <q-list bordered padding>
-    <q-item-label header>Contenu de la commande</q-item-label>
+    <q-item-label header>{{ $t('order.cartContent') }}</q-item-label>
     <div v-for="(p, index) in cartContent" v-bind:key="p.productId">
       <q-item>
         <q-item-section>
@@ -11,10 +11,12 @@
               class="col-6 q-pa-sm"
               v-model="p.orderedQty"
               type="number"
-              label="Quantité"
+              :label="$t('order.quantity')"
               dense
               lazy-rules
-              :rules="[(val) => (val && val > 0) || $t('forms.mandatory')]"
+              :rules="[
+                (val) => (val && val > 0) || $t('order.enterValidQuantity'),
+              ]"
             /><q-input
               suffix="€"
               mask="#.##"
@@ -24,19 +26,16 @@
               :rules="[
                 (val) =>
                   (val !== null && val !== '' && val > 0) ||
-                  $t('product.enterValidSellPrice'),
+                  $t('order.enterValidBuyPrice'),
               ]"
               class="col-6 q-pa-sm"
               v-model="p.unitPrice"
-              label="Prix unitaire"
+              :label="$t('order.price')"
               dense
               lazy-rules
             />
           </q-item-label>
         </q-item-section>
-
-        <q-item-section side top class=""> </q-item-section>
-        <q-item-section side top class=""> </q-item-section>
       </q-item>
       <q-separator spaced v-if="index < (cartContent?.length || 0) - 1" />
     </div>
