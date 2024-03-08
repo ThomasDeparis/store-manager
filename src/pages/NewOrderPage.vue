@@ -79,6 +79,7 @@
           <order-grid v-model="selectedProducts"></order-grid>
         </div>
         <div class="col-4 q-pa-sm">
+          {{ cartContent?.length || 0 }} produits ajoutés
           <order-cart v-model="cartContent"></order-cart>
         </div>
       </div>
@@ -170,7 +171,7 @@ export default defineComponent({
         const order = {
           providerId: selectedProvider.value.id,
           reference: reference.value,
-          orderDate: moment(orderDate.value).unix(),
+          orderDate: moment(orderDate.value, 'DD/MM/YYYY').toDate(),
           products: cartContent.value,
           storeId: userStore.currentStore,
         } as IOrder;

@@ -6,8 +6,16 @@
         <q-item-section>
           <q-item-label overline>{{ p.productReference }}</q-item-label>
           <q-item-label>{{ p.productName }}</q-item-label>
-          <q-item-label class="row" caption
-            ><q-input
+          <q-item-label class="row" caption>
+            <q-input
+              class="col-6 q-pa-sm"
+              v-model="p.orderedQty"
+              type="number"
+              label="Quantité"
+              dense
+              lazy-rules
+              :rules="[(val) => (val && val > 0) || $t('forms.mandatory')]"
+            /><q-input
               suffix="€"
               mask="#.##"
               fill-mask="0"
@@ -22,16 +30,9 @@
               v-model="p.unitPrice"
               label="Prix unitaire"
               dense
-              lazy-rules />
-            <q-input
-              class="col-6 q-pa-sm"
-              v-model="p.orderedQty"
-              type="number"
-              label="Quantité"
-              dense
               lazy-rules
-              :rules="[(val) => (val && val > 0) || $t('forms.mandatory')]"
-          /></q-item-label>
+            />
+          </q-item-label>
         </q-item-section>
 
         <q-item-section side top class=""> </q-item-section>
@@ -44,7 +45,6 @@
 
 <script lang="ts">
 import { IOrderRow } from 'src/models/order/order';
-import { IProduct } from 'src/models/product/product';
 import { PropType, defineComponent, computed } from 'vue';
 
 export default defineComponent({

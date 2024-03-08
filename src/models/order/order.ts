@@ -1,5 +1,3 @@
-import { Timestamp } from 'firebase/firestore';
-
 export interface IOrderRow {
   productId: string;
   productName: string;
@@ -13,8 +11,8 @@ export interface IOrder {
   id: string;
   providerId: string;
   reference: string;
-  orderDate: number;
-  receiptDate?: number;
+  orderDate: Date;
+  receiptDate?: Date;
   storeId: string;
   products: IOrderRow[];
 }
