@@ -17,7 +17,7 @@ export interface IProduct {
   providerReference?: string;
   storeId: string;
   lastChangeUserId?: string;
-  stockLogs: IProductStockLog[];
+  stockLogs?: IProductStockLog[];
 }
 
 export interface ProductListFilter {

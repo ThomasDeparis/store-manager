@@ -25,6 +25,7 @@ export default {
     technicalError: 'Erreur lors de la connexion',
     loginOk: 'Connecté',
     loginAction: 'Se connecter',
+    logoutAction: 'Se déconnecter',
     signUpAction: "S'inscrire",
     weakPassword: 'Le mot de passe doit contenir au moins 6 caractères',
   },
@@ -66,5 +67,6 @@ export default {
     menu: 'Menu',
     products: 'Produits',
     providers: 'Fournisseurs',
+    orders: 'Commandes fournisseurs',
   },
 };

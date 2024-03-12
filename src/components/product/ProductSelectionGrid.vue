@@ -37,7 +37,7 @@ import { QTableProps } from 'quasar';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-  name: 'OrderGrid',
+  name: 'ProductSelectionGrid',
   emits: ['update:modelValue'],
 
   setup() {

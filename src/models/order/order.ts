@@ -14,5 +14,12 @@ export interface IOrder {
   orderDate: Date;
   receiptDate?: Date;
   storeId: string;
-  products: IOrderRow[];
+  products?: IOrderRow[];
+}
+
+export interface IOrderState {
+  orders: IOrder[];
+  error?: string | null;
+  isLoading: boolean;
+  storeId: string;
 }

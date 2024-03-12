@@ -1,13 +1,27 @@
 import { defineStore } from 'pinia';
-import { IOrder } from 'src/models/order/order';
+import { IOrder, IOrderState } from 'src/models/order/order';
 import { ErrorType } from 'models/errortype';
 import { db } from 'src/firebase.config';
-import { collection, doc, setDoc, addDoc, Timestamp } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  setDoc,
+  addDoc,
+  Timestamp,
+  query,
+  where,
+  getDocs,
+} from 'firebase/firestore';
 import { IOrderError } from 'src/models/order/ordererror';
 
 export const useOrderStore = defineStore('order', {
-  state: () => {
-    return {};
+  state: (): IOrderState => {
+    return {
+      orders: [],
+      error: null,
+      isLoading: false,
+      storeId: '',
+    };
   },
   actions: {
     async addOrder(order: IOrder) {
@@ -37,6 +51,25 @@ export const useOrderStore = defineStore('order', {
 
         throw pError;
       }
+    },
+    async loadOrders(storeId: string) {
+      this.isLoading = true;
+      this.storeId = storeId;
+      const providersCol = collection(db, 'orders');
+      const q = query(providersCol, where('storeId', '==', storeId));
+      const querySnapshot = await getDocs(q);
+      this.orders = querySnapshot.docs.map(function (p) {
+        return {
+          id: p.id,
+          reference: p.data()?.reference,
+          orderDate: p.data()?.orderDate?.toDate(),
+          receiptDate: p.data()?.receiptDate?.toDate(),
+          providerId: p.data()?.providerId,
+          storeId: p.data()?.storeId,
+          products: [],
+        } as IOrder;
+      });
+      this.isLoading = false;
     },
   },
 });

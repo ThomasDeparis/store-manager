@@ -80,7 +80,9 @@
       </div>
       <div class="row q-my-md">
         <div class="col-8 q-pa-sm">
-          <order-grid v-model="selectedProducts"></order-grid>
+          <product-selection-grid
+            v-model="selectedProducts"
+          ></product-selection-grid>
         </div>
         <div class="col-4 q-pa-sm">
           {{ cartContent?.length || 0 }} {{ $t('order.addedProducts') }}
@@ -95,8 +97,8 @@
 import { defineComponent, computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
-import OrderGrid from 'components/provider/OrderGrid.vue';
-import OrderCart from 'components/provider/OrderCart.vue';
+import ProductSelectionGrid from 'src/components/product/ProductSelectionGrid.vue';
+import OrderCart from 'src/components/order/OrderCart.vue';
 
 import { IProvider } from 'models/provider/provider';
 import { useProviderStore } from 'src/stores/provider-store';
@@ -112,7 +114,7 @@ import { handleOrderError } from 'src/utils/order-error-handler';
 
 export default defineComponent({
   name: 'NewOrderPage',
-  components: { OrderGrid, OrderCart },
+  components: { ProductSelectionGrid, OrderCart },
   props: {
     providerId: {
       type: String,

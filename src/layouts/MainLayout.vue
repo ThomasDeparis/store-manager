@@ -11,8 +11,14 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
-
+        <q-toolbar-title
+          >Store Manager
+          <q-badge outline align="middle" color="white">
+            v0.0.1
+          </q-badge></q-toolbar-title
+        >
+        <q-icon v-if="!!user?.email" name="account_circle" size="sm"></q-icon>
+        <p class="text-body2 q-ma-sm">{{ user?.email }}</p>
         <div>
           <q-btn
             flat
@@ -69,14 +75,20 @@ export default defineComponent({
       {
         title: t('menu.products'),
         caption: '',
-        icon: 'school',
+        icon: 'manage_search',
         routeName: 'products',
       },
       {
         title: t('menu.providers'),
         caption: '',
-        icon: 'school',
+        icon: 'store',
         routeName: 'providers',
+      },
+      {
+        title: t('menu.orders'),
+        caption: '',
+        icon: 'shopping_cart',
+        routeName: 'orders',
       },
     ];
 
@@ -88,7 +100,7 @@ export default defineComponent({
       if (user?.value) {
         return {
           onSign: userStore.signOut,
-          label: user?.value?.email ?? '',
+          label: t('auth.logoutAction'),
           icon: 'logout',
         };
       } else {
