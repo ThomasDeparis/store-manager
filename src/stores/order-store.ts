@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia';
-import { IOrder, IOrderState } from 'src/models/order/order';
+import { IOrder, IOrderRow, IOrderState } from 'src/models/order/order';
 import { ErrorType } from 'models/errortype';
 import { db } from 'src/firebase.config';
 import {
   collection,
   doc,
   setDoc,
-  addDoc,
   Timestamp,
   query,
   where,
   getDocs,
+  writeBatch,
 } from 'firebase/firestore';
 import { IOrderError } from 'src/models/order/ordererror';
 
@@ -38,8 +38,10 @@ export const useOrderStore = defineStore('order', {
 
         //order's products in sub collection
         const productsCol = collection(newOrder, 'products');
-        for (const p of order.products) {
-          await addDoc(productsCol, p);
+        for (const p of order?.products ?? []) {
+          const newProduct = doc(productsCol);
+          p.id = newProduct.id;
+          await setDoc(newProduct, p);
         }
       } catch (error: any) {
         console.log(error);
@@ -70,6 +72,60 @@ export const useOrderStore = defineStore('order', {
         } as IOrder;
       });
       this.isLoading = false;
+    },
+
+    async loadOrderProducts(orderId: string): Promise<IOrder> {
+      const order = this.orders.find((o) => o.id === orderId);
+
+      if (!order) {
+        const oError = {
+          orderReference: orderId,
+          errorType: ErrorType.Technical,
+          message: 'loadOrderProducts : order was not found in store',
+        } as IOrderError;
+
+        console.log(oError);
+        throw oError;
+      }
+
+      this.isLoading = true;
+      const productsCollection = collection(db, 'orders', orderId, 'products');
+      const querySnapshot = await getDocs(productsCollection);
+      order.products = querySnapshot.docs.map(function (p) {
+        return {
+          id: p.data()?.id,
+          productId: p.data()?.productId,
+          productName: p.data()?.productName,
+          productReference: p.data()?.productReference,
+          orderedQty: p.data()?.orderedQty,
+          receivedQty: p.data()?.receivedQty,
+          unitPrice: p.data()?.unitPrice,
+        } as IOrderRow;
+      });
+      this.isLoading = false;
+      return order;
+    },
+    async validateReceipt(orderId: string, orderProducts: IOrderRow[]) {
+      try {
+        console.log(orderProducts);
+        const batch = writeBatch(db);
+
+        for (const p of orderProducts) {
+          const orderProductDoc = doc(db, 'orders', orderId, 'products', p.id);
+          batch.update(orderProductDoc, { receivedQty: p.receivedQty });
+        }
+
+        await batch.commit();
+      } catch (e: any) {
+        console.log(e);
+        const oError = {
+          orderReference: orderId,
+          errorType: ErrorType.Technical,
+          message: `validateReceipt : ${e?.message}`,
+        } as IOrderError;
+
+        throw oError;
+      }
     },
   },
 });

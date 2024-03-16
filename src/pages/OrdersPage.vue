@@ -8,9 +8,11 @@
 
   <q-drawer :model-value="sidePanel === 'confirm'" side="right" bordered>
     <order-confirm
+      :order-id="editingRow.id"
       v-model="editingRow.products"
       :order-reference="editingRow.reference"
       @order-confirmed="handleOrderConfirmed"
+      @close="closeSidePanel"
     ></order-confirm>
   </q-drawer>
 </template>
@@ -27,6 +29,9 @@ import useNotifyHandler from 'hooks/notify-handler';
 import { useDialogPluginComponent } from 'quasar';
 import { IOrder } from 'src/models/order/order';
 
+import { useOrderStore } from 'src/stores/order-store';
+import { IOrderError } from 'src/models/order/ordererror';
+
 export default defineComponent({
   name: 'OrdersPage',
   components: { OrderGrid, OrderConfirm },
@@ -36,6 +41,8 @@ export default defineComponent({
     const { t } = useI18n();
     const router = useRouter();
     const dialogOpened = ref(false);
+    const orderStore = useOrderStore();
+    const notifier = useNotifyHandler();
 
     const gotoNewOrder = () => {
       router.push({
@@ -49,6 +56,7 @@ export default defineComponent({
       reference: '',
       orderDate: new Date(),
       storeId: '',
+      products: [],
     };
 
     const editingRow = ref<IOrder>(emptyRow);
@@ -57,15 +65,25 @@ export default defineComponent({
     var sidePanel: Ref<PanelMode> = ref(null);
 
     const openSidePanel = (mode: PanelMode, row: IOrder) => {
-      sidePanel.value = mode;
+      try {
+        if (row?.products?.length === 0) {
+          orderStore.loadOrderProducts(row.id);
+        }
 
-      if (!!row?.products) {
-        //TODO : charger les produits de la commande
+        sidePanel.value = mode;
+        const reloadedOrder = orderStore.orders.find((o) => o.id === row.id);
+
+        if (!reloadedOrder) {
+          notifier.NotifyError(t('common.technicalError'));
+        } else {
+          let rowCopy = Object.create(reloadedOrder);
+          editingRow.value = rowCopy;
+        }
+      } catch (error: IOrderError | unknown) {
+        notifier.NotifyError(t('common.technicalError'));
       }
-
-      let rowCopy = Object.create(row);
-      editingRow.value = rowCopy;
     };
+
     const closeSidePanel = () => {
       sidePanel.value = null;
       editingRow.value = emptyRow;

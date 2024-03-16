@@ -129,6 +129,10 @@ export default defineComponent({
     const notifier = useNotifyHandler();
     const router = useRouter();
 
+    if (userStore.currentStore) {
+      providerStore.loadProviders(userStore.currentStore);
+    }
+
     //load providers list after user is loaded
     watch(
       () => userStore.currentStore,

@@ -1,4 +1,5 @@
 export interface IOrderRow {
+  id: string;
   productId: string;
   productName: string;
   productReference: string;
@@ -14,7 +15,7 @@ export interface IOrder {
   orderDate: Date;
   receiptDate?: Date;
   storeId: string;
-  products?: IOrderRow[];
+  products: IOrderRow[];
 }
 
 export interface IOrderState {

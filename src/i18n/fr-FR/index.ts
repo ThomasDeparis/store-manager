@@ -58,6 +58,7 @@ export default {
     addedProducts: 'produits ajoutés',
     cartContent: 'Contenu de la commande',
     quantity: 'Quantité',
+    receivedQty: 'Quantité reçue',
     price: "Prix d'achat",
     enterValidBuyPrice: "Entrer un prix d'achat valide",
     enterValidQuantity: 'Entrer une quantité valide',
