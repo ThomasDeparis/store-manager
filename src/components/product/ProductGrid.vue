@@ -61,12 +61,11 @@
         </q-td>
       </template>
     </q-table>
-    <q-btn icon="search" @click="loadProducts"></q-btn>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import { useProductStore } from 'src/stores/product-store';
 import { useUserStore } from 'src/stores/user-store';
 import { QTableProps } from 'quasar';
@@ -118,6 +117,19 @@ export default defineComponent({
     const loadProducts = () => {
       productsStore.loadProducts(user.currentStore);
     };
+
+    //load products list after user is loaded
+    watch(
+      () => user.currentStore,
+      () => {
+        loadProducts();
+      }
+    );
+
+    onMounted(() => {
+      if (user.currentStore != null) loadProducts();
+    });
+
 
     const productsRows = computed(() => {
       return productsStore.products.map(function (p) {

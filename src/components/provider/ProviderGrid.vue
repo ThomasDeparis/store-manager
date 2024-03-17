@@ -73,7 +73,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import { useProviderStore } from 'src/stores/provider-store';
 import { useUserStore } from 'src/stores/user-store';
 import { QTableProps } from 'quasar';
@@ -121,6 +121,18 @@ export default defineComponent({
     const loadProviders = () => {
       providersStore.loadProviders(user.currentStore);
     };
+
+    //load providers list after user is loaded
+    watch(
+      () => user.currentStore,
+      () => {
+        loadProviders();
+      }
+    );
+
+    onMounted(() => {
+      if (user.currentStore != null) loadProviders();
+    });
 
     const providersRows = computed(() => {
       return providersStore.providers.map(function (p) {

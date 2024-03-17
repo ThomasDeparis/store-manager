@@ -26,10 +26,13 @@ export const useProductStore = defineStore('product', {
       products: [],
       error: null,
       isLoading: false,
+      storeId: ''
     };
   },
   actions: {
     async loadProducts(storeId: string) {
+      this.storeId = storeId
+      this.products = []
       this.isLoading = true;
       const productsCol = collection(db, 'products');
       const q = query(productsCol, where('storeId', '==', storeId));

@@ -19,10 +19,13 @@ export const useProviderStore = defineStore('provider', {
       providers: [],
       error: null,
       isLoading: false,
+      storeId: ''
     };
   },
   actions: {
     async loadProviders(storeId: string) {
+      this.storeId = storeId;
+      this.providers = []
       this.isLoading = true;
       const providersCol = collection(db, 'providers');
       const q = query(providersCol, where('storeId', '==', storeId));

@@ -28,6 +28,7 @@ export interface IProductState {
   products: IProduct[];
   error?: string | null;
   isLoading: boolean;
+  storeId: string;
 }
 
 export interface IProductEdit {

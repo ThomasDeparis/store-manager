@@ -11,4 +11,5 @@ export interface IProviderState {
   providers: IProvider[];
   error?: string | null;
   isLoading: boolean;
+  storeId: string;
 }

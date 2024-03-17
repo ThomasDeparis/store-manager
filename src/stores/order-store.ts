@@ -56,6 +56,7 @@ export const useOrderStore = defineStore('order', {
     },
     async loadOrders(storeId: string) {
       this.isLoading = true;
+      this.orders = []
       this.storeId = storeId;
       const providersCol = collection(db, 'orders');
       const q = query(providersCol, where('storeId', '==', storeId));

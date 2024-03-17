@@ -107,7 +107,7 @@ export default defineComponent({
       });
     });
 
-    //load providers list after user is loaded
+    //load orders list after user is loaded
     watch(
       () => user.currentStore,
       () => {
