@@ -12,12 +12,19 @@
     >
       <template v-slot:top>
         <q-btn
+          data-testid="newproductbtn"
           color="primary"
           :label="$t('product.newProduct')"
           @click="$emit('new-product-click')"
         />
         <q-space />
-        <q-input dense debounce="300" color="primary" v-model="filter">
+        <q-input
+          data-testid="searchproductinput"
+          dense
+          debounce="300"
+          color="primary"
+          v-model="filter"
+        >
           <template v-slot:append>
             <q-icon name="search" />
           </template>
@@ -28,6 +35,7 @@
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
           <q-btn
+            data-testid="editproductbtn"
             class="q-mr-sm"
             icon="edit"
             push
@@ -37,10 +45,11 @@
             @click="$emit('edit-row-click', props.row)"
           >
             <q-tooltip>
-              <div class="text-body2">Éditer</div>
+              <div class="text-body2">{{ $t('buttons.edit') }}</div>
             </q-tooltip>
           </q-btn>
           <q-btn
+            data-testid="detailproductbtn"
             icon="visibility"
             class="q-mr-sm"
             push
@@ -50,12 +59,12 @@
             @click="$emit('detail-row-click', props.row)"
           >
             <q-tooltip>
-              <div class="text-body2">Détail</div>
+              <div class="text-body2">{{ $t('buttons.detail') }}</div>
             </q-tooltip>
           </q-btn>
           <q-btn icon="copy_all" round push color="grey" size="sm">
             <q-tooltip>
-              <div class="text-body2">Dupliquer</div>
+              <div class="text-body2">{{ $t('buttons.duplicate') }}</div>
             </q-tooltip>
           </q-btn>
         </q-td>
@@ -129,7 +138,6 @@ export default defineComponent({
     onMounted(() => {
       if (user.currentStore != null) loadProducts();
     });
-
 
     const productsRows = computed(() => {
       return productsStore.products.map(function (p) {

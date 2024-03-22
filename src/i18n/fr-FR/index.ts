@@ -11,6 +11,7 @@ export default {
     detail: 'Détail',
     order: 'Commander',
     close: 'Fermer',
+    duplicate: 'Dupliquer',
   },
   forms: {
     mandatory: 'Champ obligatoire',

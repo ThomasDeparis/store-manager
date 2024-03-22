@@ -14,6 +14,7 @@
     <q-form @submit="onSubmit" ref="form" class="q-gutter-md q-pa-sm">
       <q-input
         filled
+        data-testid="referenceinput"
         v-model="editing.reference"
         :label="$t('product.reference')"
         readonly
@@ -22,12 +23,14 @@
       />
       <q-input
         filled
+        data-testid="providerrefinput"
         v-model="editing.providerReference"
         :readonly="isReadonly"
         :label="$t('product.providerReference')"
       />
       <q-input
         filled
+        data-testid="nameinput"
         v-model="editing.name"
         :label="$t('product.name')"
         :readonly="isReadonly"
@@ -40,6 +43,7 @@
         mask="#.##"
         fill-mask="0"
         reverse-fill-mask
+        data-testid="sellpriceinput"
         v-model="editing.sellPrice"
         input-class="text-right"
         :label="$t('product.sellPrice')"
@@ -54,6 +58,7 @@
       <div class="row justify-center">
         <q-btn
           v-if="!isReadonly"
+          data-testid="modifybtn"
           :label="$t('buttons.edit')"
           type="submit"
           color="primary"
