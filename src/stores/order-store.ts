@@ -14,6 +14,9 @@ import {
 } from 'firebase/firestore';
 import { IOrderError } from 'src/models/order/ordererror';
 
+import { useProductStore } from './product-store';
+import { IProductStockLog } from 'src/models/product/product';
+
 export const useOrderStore = defineStore('order', {
   state: (): IOrderState => {
     return {
@@ -43,6 +46,8 @@ export const useOrderStore = defineStore('order', {
           p.id = newProduct.id;
           await setDoc(newProduct, p);
         }
+
+        this.orders.push(order);
       } catch (error: any) {
         console.log(error);
         const pError = {
@@ -56,7 +61,7 @@ export const useOrderStore = defineStore('order', {
     },
     async loadOrders(storeId: string) {
       this.isLoading = true;
-      this.orders = []
+      this.orders = [];
       this.storeId = storeId;
       const providersCol = collection(db, 'orders');
       const q = query(providersCol, where('storeId', '==', storeId));
@@ -107,16 +112,44 @@ export const useOrderStore = defineStore('order', {
       return order;
     },
     async validateReceipt(orderId: string, orderProducts: IOrderRow[]) {
+      const productStore = useProductStore();
+      const validationDate = Timestamp.now();
+
       try {
-        console.log(orderProducts);
         const batch = writeBatch(db);
+
+        const orderDoc = doc(db, 'orders', orderId);
+        batch.update(orderDoc, { receiptDate: validationDate });
 
         for (const p of orderProducts) {
           const orderProductDoc = doc(db, 'orders', orderId, 'products', p.id);
           batch.update(orderProductDoc, { receivedQty: p.receivedQty });
+
+          const stockLog = {
+            type: 'order',
+            adjustment: p.receivedQty,
+            date: validationDate,
+            documentId: orderId,
+          } as IProductStockLog;
+          await productStore.updateStock(p.productId, stockLog, batch);
         }
 
         await batch.commit();
+
+        //update order in store
+        const i = this.orders.findIndex((o) => o.id === orderId);
+        if (i < 0) {
+          const error = {
+            productReference: orderId,
+            errorType: ErrorType.Technical,
+            message:
+              'OrderStore.validateReceipt : cannot find order in store to edit it',
+          } as IOrderError;
+
+          throw error;
+        }
+        const storeOrder = this.orders[i];
+        storeOrder.receiptDate = validationDate.toDate();
       } catch (e: any) {
         console.log(e);
         const oError = {

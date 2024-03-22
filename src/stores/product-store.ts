@@ -3,6 +3,7 @@ import {
   IProductState,
   IProduct,
   IProductEdit,
+  IProductStockLog,
 } from 'src/models/product/product';
 import {
   IProductError,
@@ -18,6 +19,9 @@ import {
   doc,
   setDoc,
   updateDoc,
+  getDoc,
+  writeBatch,
+  WriteBatch,
 } from 'firebase/firestore';
 
 export const useProductStore = defineStore('product', {
@@ -26,13 +30,13 @@ export const useProductStore = defineStore('product', {
       products: [],
       error: null,
       isLoading: false,
-      storeId: ''
+      storeId: '',
     };
   },
   actions: {
     async loadProducts(storeId: string) {
-      this.storeId = storeId
-      this.products = []
+      this.storeId = storeId;
+      this.products = [];
       this.isLoading = true;
       const productsCol = collection(db, 'products');
       const q = query(productsCol, where('storeId', '==', storeId));
@@ -129,6 +133,47 @@ export const useProductStore = defineStore('product', {
       } catch (error: any) {
         const pError = {
           productReference: edited.reference,
+          errorType: ErrorType.Technical,
+          message: error.toString(),
+        } as IProductError;
+
+        throw pError;
+      }
+    },
+    async updateStock(
+      productId: string,
+      stockAdjustment: IProductStockLog,
+      globalBatch?: WriteBatch
+    ) {
+      try {
+        const productDoc = doc(db, 'products', productId);
+        const productSnap = await getDoc(productDoc);
+
+        const batch = globalBatch || writeBatch(db);
+
+        const newStockLogDoc = doc(
+          collection(db, 'products', productId, 'stockLogs')
+        );
+
+        stockAdjustment.id = newStockLogDoc.id; //copy the generated document id into id field
+        stockAdjustment.initialQuantity = Number(
+          productSnap?.data()?.quantity || 0
+        );
+        batch.set(newStockLogDoc, stockAdjustment);
+
+        const newQty: number =
+          (stockAdjustment.initialQuantity || 0) + stockAdjustment.adjustment;
+        batch.update(productDoc, {
+          quantity: newQty,
+        });
+
+        if (globalBatch === undefined) {
+          console.log('commit update stock');
+          await batch.commit();
+        }
+      } catch (error: any) {
+        const pError = {
+          productReference: productId,
           errorType: ErrorType.Technical,
           message: error.toString(),
         } as IProductError;

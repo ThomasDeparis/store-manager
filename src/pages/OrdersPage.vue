@@ -90,7 +90,8 @@ export default defineComponent({
     };
 
     const handleOrderConfirmed = () => {
-      console.log('order confirmed handled');
+      closeSidePanel();
+      notifier.NotifySuccess(t('order.received'));
     };
 
     return {

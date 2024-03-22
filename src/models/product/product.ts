@@ -1,9 +1,12 @@
 import { Timestamp } from 'firebase/firestore';
 
+export type ProductStockLogType = 'order' | 'sale';
+
 export interface IProductStockLog {
   id: string;
-  type: string;
-  quantity: number;
+  type: ProductStockLogType;
+  initialQuantity?: number;
+  adjustment: number;
   date: Timestamp;
   documentId?: string;
 }

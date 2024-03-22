@@ -55,6 +55,7 @@ export default {
     newOrder: 'Nouvelle commande fournisseur',
     reference: 'Référence commande',
     orderDate: 'Date de la commande',
+    receiptDate: 'Date de réception',
     provider: 'Fournisseur',
     addedProducts: 'produits ajoutés',
     cartContent: 'Contenu de la commande',
@@ -64,6 +65,7 @@ export default {
     enterValidBuyPrice: "Entrer un prix d'achat valide",
     enterValidQuantity: 'Entrer une quantité valide',
     created: 'Commande fournisseur créée avec succès',
+    received: 'Commande fournisseur réceptionnée avec succès',
   },
   menu: {
     menu: 'Menu',

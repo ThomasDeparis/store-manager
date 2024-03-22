@@ -27,6 +27,7 @@
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
           <q-btn
+            v-if="props.row.receiptDate === undefined"
             class="q-mr-sm"
             icon="check_circle"
             push
@@ -84,7 +85,15 @@ export default defineComponent({
         label: t('order.orderDate'),
         field: 'orderDate',
         sortable: true,
-        format: (val: Date) => moment(val).format('DD/MM/YYYY'),
+        format: (val: Date) => moment(val).format('DD/MM/YYYY HH:mm'),
+      },
+      {
+        name: 'receiptDate',
+        label: t('order.receiptDate'),
+        field: 'receiptDate',
+        sortable: true,
+        format: (val: Date) =>
+          val ? moment(val).format('DD/MM/YYYY HH:mm') : '',
       },
     ] as QTableProps['columns'];
 

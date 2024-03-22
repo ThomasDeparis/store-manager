@@ -23,6 +23,8 @@
                 <q-input
                   class="q-pa-sm col-8"
                   v-model="p.receivedQty"
+                  mask="#"
+                  fill-mask="0"
                   type="number"
                   :label="$t('order.receivedQty')"
                   :hint="`Quantité commandée : ${p.orderedQty}`"
@@ -86,8 +88,21 @@ export default defineComponent({
     const cartContent = computed(() => props.modelValue);
     const orderStore = useOrderStore();
 
-    const confirmOrder = () => {
-      orderStore.validateReceipt(props.orderId, cartContent.value);
+    const confirmOrder = async () => {
+      //remap values to force right cast
+      const orderContent = cartContent.value.map(function (cc) {
+        return {
+          id: cc.id,
+          productId: cc.productId,
+          productName: cc.productName,
+          productReference: cc.productReference,
+          orderedQty: Number(cc.orderedQty),
+          receivedQty: Number(cc.receivedQty),
+          unitPrice: Number(cc.unitPrice),
+        };
+      }) as IOrderRow[];
+
+      await orderStore.validateReceipt(props.orderId, orderContent);
       context.emit('order-confirmed', cartContent.value);
     };
 
