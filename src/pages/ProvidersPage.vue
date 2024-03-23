@@ -86,8 +86,6 @@ export default defineComponent({
 
     const readonlyEditMode = computed(() => sidePanel.value === 'detail');
     const handleEditModeChanged = (newEditMode: boolean) => {
-      console.log('nouveau mode');
-      console.log(newEditMode);
       sidePanel.value = newEditMode ? 'edit' : 'detail';
     };
 

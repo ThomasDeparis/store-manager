@@ -1,7 +1,7 @@
 import { AuthError } from 'models/autherror';
 import { t } from 'src/i18n';
 
-function getErrorToDisplay(originalError: AuthError) {
+function getErrorToDisplay(originalError: AuthError): string {
   if (originalError?.message.toLowerCase().includes('invalid-credential')) {
     return t('auth.badLogin');
   } else if (originalError?.message.toLowerCase().includes('weak-password')) {
@@ -11,7 +11,7 @@ function getErrorToDisplay(originalError: AuthError) {
   }
 }
 
-export function handleAuthError(originalError: AuthError) {
+export function handleAuthError(originalError: AuthError): string {
   console.log(originalError?.message);
   return getErrorToDisplay(originalError);
 }

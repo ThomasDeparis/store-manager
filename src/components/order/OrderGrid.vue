@@ -37,7 +37,22 @@
             @click="$emit('confirm-row-click', props.row)"
           >
             <q-tooltip>
-              <div class="text-body2">Finaliser la commande</div>
+              <div class="text-body2">{{ $t('order.confirm') }}</div>
+            </q-tooltip>
+          </q-btn>
+          <q-btn
+            v-if="props.row.receiptDate"
+            data-testid="detailorderbtn"
+            class="q-mr-sm"
+            icon="visibility"
+            push
+            round
+            color="primary"
+            size="sm"
+            @click="$emit('detail-row-click', props.row)"
+          >
+            <q-tooltip>
+              <div class="text-body2">{{ $t('buttons.detail') }}</div>
             </q-tooltip>
           </q-btn>
         </q-td>
@@ -48,20 +63,22 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted } from 'vue';
-import { useOrderStore } from 'src/stores/order-store';
-import { useUserStore } from 'src/stores/user-store';
+import { useOrderStore } from 'stores/order-store';
+import { useProviderStore } from 'stores/provider-store';
+import { useUserStore } from 'stores/user-store';
 import { QTableProps } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import moment from 'moment';
 
 export default defineComponent({
   name: 'OrderGrid',
-  emits: ['new-order-click', 'confirm-row-click'],
+  emits: ['new-order-click', 'confirm-row-click', 'detail-row-click'],
 
   setup() {
     const { t } = useI18n();
     const ordersStore = useOrderStore();
     const user = useUserStore();
+    const providerStore = useProviderStore();
 
     const columns = [
       {
@@ -77,15 +94,15 @@ export default defineComponent({
       },
       {
         name: 'provider',
-        label: t('provider.name'),
-        field: 'providerId',
+        label: t('order.provider'),
+        field: 'providerName',
       },
       {
         name: 'orderDate',
         label: t('order.orderDate'),
         field: 'orderDate',
         sortable: true,
-        format: (val: Date) => moment(val).format('DD/MM/YYYY HH:mm'),
+        format: (val: Date) => moment(val).format('DD/MM/YYYY'),
       },
       {
         name: 'receiptDate',
@@ -97,7 +114,7 @@ export default defineComponent({
       },
     ] as QTableProps['columns'];
 
-    const loadOrders = () => {
+    const loadStores = () => {
       if (
         ordersStore.orders == null ||
         ordersStore.orders?.length === 0 ||
@@ -105,12 +122,26 @@ export default defineComponent({
       ) {
         ordersStore.loadOrders(user.currentStore);
       }
+
+      if (
+        providerStore.providers == null ||
+        providerStore.providers?.length === 0 ||
+        providerStore.storeId !== user.currentStore
+      ) {
+        providerStore.loadProviders(user.currentStore);
+      }
     };
+
+    const providers = computed(() => {
+      return providerStore.providers;
+    });
 
     const ordersRows = computed(() => {
       return ordersStore.orders.map(function (o) {
         return {
           ...o,
+          providerName: providers.value.find((p) => p.id === o.providerId)
+            ?.name,
           actions: null, // to match with actions column
         };
       });
@@ -120,19 +151,19 @@ export default defineComponent({
     watch(
       () => user.currentStore,
       () => {
-        loadOrders();
+        loadStores();
       }
     );
 
     onMounted(() => {
-      if (user.currentStore != null) loadOrders();
+      if (user.currentStore != null) loadStores();
     });
 
     return {
       filter: ref(''),
       columns,
       rows: ordersRows,
-      loadOrders,
+      loadOrders: loadStores,
       loading: computed(() => ordersStore.isLoading),
     };
   },

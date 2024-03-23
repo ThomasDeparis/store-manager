@@ -123,8 +123,6 @@ export const useProductStore = defineStore('product', {
 
           throw error;
         }
-        console.log(edited);
-        console.log(edited.sellPrice);
         const storeProduct = this.products[i];
         storeProduct.name = edited.name;
         storeProduct.providerReference = edited.providerReference;
@@ -168,7 +166,6 @@ export const useProductStore = defineStore('product', {
         });
 
         if (globalBatch === undefined) {
-          console.log('commit update stock');
           await batch.commit();
         }
       } catch (error: any) {

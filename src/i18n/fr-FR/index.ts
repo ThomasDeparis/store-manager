@@ -66,6 +66,8 @@ export default {
     enterValidQuantity: 'Entrer une quantité valide',
     created: 'Commande fournisseur créée avec succès',
     received: 'Commande fournisseur réceptionnée avec succès',
+    confirm: 'Finaliser la commande',
+    confirmError: 'Erreur technique lors de la validation de la commande',
   },
   menu: {
     menu: 'Menu',

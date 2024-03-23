@@ -3,6 +3,7 @@
     <order-grid
       @new-order-click="gotoNewOrder"
       @confirm-row-click="(row) => openSidePanel('confirm', row)"
+      @detail-row-click="(row) => openSidePanel('detail', row)"
     ></order-grid>
   </q-page>
 
@@ -12,8 +13,12 @@
       v-model="editingRow.products"
       :order-reference="editingRow.reference"
       @order-confirmed="handleOrderConfirmed"
+      @order-confirm-error="handleError"
       @close="closeSidePanel"
     ></order-confirm>
+  </q-drawer>
+  <q-drawer :model-value="sidePanel === 'detail'" side="right" bordered>
+    <order-detail v-model="editingRow" @close="closeSidePanel"></order-detail>
   </q-drawer>
 </template>
 
@@ -24,17 +29,19 @@ import { useRouter } from 'vue-router';
 
 import OrderGrid from 'components/order/OrderGrid.vue';
 import OrderConfirm from 'components/order/OrderConfirm.vue';
+import OrderDetail from 'components/order/OrderDetail.vue';
 
 import useNotifyHandler from 'hooks/notify-handler';
 import { useDialogPluginComponent } from 'quasar';
-import { IOrder } from 'src/models/order/order';
+import { IOrder } from 'models/order/order';
 
-import { useOrderStore } from 'src/stores/order-store';
-import { IOrderError } from 'src/models/order/ordererror';
+import { useOrderStore } from 'stores/order-store';
+import { IOrderError } from 'models/order/ordererror';
+import { handleOrderError } from 'utils/order-error-handler';
 
 export default defineComponent({
   name: 'OrdersPage',
-  components: { OrderGrid, OrderConfirm },
+  components: { OrderGrid, OrderConfirm, OrderDetail },
   emits: [...useDialogPluginComponent.emits],
 
   setup() {
@@ -61,7 +68,7 @@ export default defineComponent({
 
     const editingRow = ref<IOrder>(emptyRow);
 
-    type PanelMode = 'confirm' | null;
+    type PanelMode = 'confirm' | 'detail' | null;
     var sidePanel: Ref<PanelMode> = ref(null);
 
     const openSidePanel = (mode: PanelMode, row: IOrder) => {
@@ -94,6 +101,10 @@ export default defineComponent({
       notifier.NotifySuccess(t('order.received'));
     };
 
+    const handleError = (error: IOrderError) => {
+      notifier.NotifyError(handleOrderError(error));
+    };
+
     return {
       dialogOpened,
       editingRow,
@@ -102,6 +113,7 @@ export default defineComponent({
       openSidePanel,
       closeSidePanel,
       handleOrderConfirmed,
+      handleError,
     };
   },
 });

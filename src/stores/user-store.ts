@@ -57,7 +57,6 @@ export const useUserStore = defineStore('user', {
 
     // observer to refresh current user when signin, signup etc.
     fetchUser() {
-      console.log('fetchUser');
       onAuthStateChanged(auth, async (user) => {
         this.userData = user;
         this.currentStore = 'mfXwA7aLv9FAwtdDrXU0';

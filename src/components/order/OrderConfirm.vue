@@ -61,16 +61,17 @@
 </template>
 
 <script lang="ts">
-import { IOrderRow } from 'src/models/order/order';
+import { IOrderRow } from 'models/order/order';
 import { PropType, defineComponent, computed } from 'vue';
 
 import SidePanel from 'components/common/SidePanel.vue';
-import { useOrderStore } from 'src/stores/order-store';
+import { useOrderStore } from 'stores/order-store';
+import { IOrderError } from 'models/order/ordererror';
 
 export default defineComponent({
   name: 'OrderConfirm',
   components: { SidePanel },
-  emits: ['order-confirmed', 'close'],
+  emits: ['order-confirmed', 'order-confirm-error', 'close'],
   props: {
     orderReference: {
       type: String,
@@ -102,8 +103,12 @@ export default defineComponent({
         };
       }) as IOrderRow[];
 
-      await orderStore.validateReceipt(props.orderId, orderContent);
-      context.emit('order-confirmed', cartContent.value);
+      try {
+        await orderStore.validateReceipt(props.orderId, orderContent);
+        context.emit('order-confirmed', cartContent.value);
+      } catch (error: IOrderError | unknown) {
+        context.emit('order-confirm-error', error);
+      }
     };
 
     const fillAllQties = () => {
