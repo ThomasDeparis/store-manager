@@ -9,25 +9,19 @@
           <q-item-label class="row" caption>
             <q-input
               class="col-6 q-pa-sm"
-              v-model="p.orderedQty"
-              type="number"
+              v-model.number="p.orderedQty"
+              inputmode="numeric"
               :label="$t('order.quantity')"
               dense
               lazy-rules
-              :rules="[
-                (val) => (val && val > 0) || $t('order.enterValidQuantity'),
-              ]"
+              :rules="[(val) => val > 0 || $t('order.enterValidQuantity')]"
             /><q-input
               suffix="€"
               mask="#.##"
               fill-mask="0"
               reverse-fill-mask
               input-class="text-right"
-              :rules="[
-                (val) =>
-                  (val !== null && val !== '' && val > 0) ||
-                  $t('order.enterValidBuyPrice'),
-              ]"
+              :rules="[(val) => val >= 0.0 || $t('order.enterValidBuyPrice')]"
               class="col-6 q-pa-sm"
               v-model="p.unitPrice"
               :label="$t('order.price')"

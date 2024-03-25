@@ -61,6 +61,8 @@ export default {
     cartContent: 'Contenu de la commande',
     quantity: 'Quantité',
     receivedQty: 'Quantité reçue',
+    shortQty: 'Qté commandée',
+    shortReceivedQty: 'Qté reçue',
     price: "Prix d'achat",
     enterValidBuyPrice: "Entrer un prix d'achat valide",
     enterValidQuantity: 'Entrer une quantité valide',
@@ -68,6 +70,7 @@ export default {
     received: 'Commande fournisseur réceptionnée avec succès',
     confirm: 'Finaliser la commande',
     confirmError: 'Erreur technique lors de la validation de la commande',
+    totalAmount: 'Total de la commande',
   },
   menu: {
     menu: 'Menu',

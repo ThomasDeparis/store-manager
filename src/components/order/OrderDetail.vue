@@ -16,7 +16,12 @@
       </p>
     </div>
     <div class="q-my-md">
-      <span class="q-ma-sm text-caption">{{ $t('order.cartContent') }}</span>
+      <span class="row q-mx-sm"
+        >{{ $t('order.totalAmount') }} : {{ totalAmount }} €</span
+      >
+      <span class="row q-mx-sm text-caption">{{
+        $t('order.cartContent')
+      }}</span>
       <q-list bordered padding>
         <div v-for="(p, index) in order.products" v-bind:key="p.productId">
           <q-item>
@@ -24,13 +29,13 @@
               <q-item-label overline>{{ p.productReference }}</q-item-label>
               <q-item-label class="q-mb-sm">{{ p.productName }}</q-item-label>
               <q-item-label class="row">
-                Qté reçue : {{ p.receivedQty }}
+                {{ $t('order.shortReceivedQty') }} : {{ p.receivedQty }}
               </q-item-label>
               <q-item-label class="row" caption>
-                Qté commandée : {{ p.orderedQty }}
+                {{ $t('order.shortQty') }} : {{ p.orderedQty }}
               </q-item-label>
               <q-item-label class="row">
-                Prix d'achat : {{ p.unitPrice }} €
+                {{ $t('order.price') }} : {{ p.unitPrice }} €
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -45,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { IOrder } from 'models/order/order';
+import { IOrder, IOrderRow } from 'models/order/order';
 import { PropType, defineComponent, computed } from 'vue';
 
 import SidePanel from 'components/common/SidePanel.vue';
@@ -71,9 +76,18 @@ export default defineComponent({
       )?.name;
     });
 
+    const totalAmount = computed(() => {
+      return order.value?.products?.reduce(
+        (total: number, p: IOrderRow) =>
+          total + p.unitPrice * (p?.receivedQty || 0),
+        0
+      );
+    });
+
     return {
       order,
       providerName,
+      totalAmount,
     };
   },
 });
