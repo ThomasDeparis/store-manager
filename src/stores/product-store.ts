@@ -69,7 +69,7 @@ export const useProductStore = defineStore('product', {
 
       return !querySnapshot.empty;
     },
-    async addProduct(product: IProduct) {
+    async addProduct(product: IProduct): Promise<IProduct> {
       const alreadyExists = await this.referenceExists(
         product.storeId,
         product.reference
@@ -89,6 +89,7 @@ export const useProductStore = defineStore('product', {
         await setDoc(newProduct, product);
 
         this.products.push(product);
+        return product;
       } catch (error: any) {
         const pError = {
           productReference: product.reference,

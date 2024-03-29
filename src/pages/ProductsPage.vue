@@ -4,12 +4,14 @@
       @new-product-click="openSidePanel('new', emptyRow)"
       @edit-row-click="(row) => openSidePanel('edit', row)"
       @detail-row-click="(row) => openSidePanel('detail', row)"
+      @duplicate-row-click="(row) => duplicateProduct(row)"
     ></product-grid>
   </q-page>
 
   <q-drawer :model-value="sidePanel === 'new'" side="right" bordered>
     <product-creation
-      @productCreated="handleNewProduct"
+      v-model="editingRow"
+      @update:model-value="handleNewProduct"
       @productCreationFailed="handleTechnicalError"
       @close="closeSidePanel"
     ></product-creation>
@@ -78,6 +80,16 @@ export default defineComponent({
       editingRow.value = emptyRow;
     };
 
+    const duplicateProduct = (original: IProduct) => {
+      let copy = Object.create(emptyRow) as IProduct;
+      copy.reference = original.reference;
+      copy.providerReference = original.providerReference;
+      copy.name = original.name;
+      copy.sellPrice = original.sellPrice;
+
+      openSidePanel('new', copy);
+    };
+
     const readonlyEditMode = computed(() => sidePanel.value === 'detail');
     const handleEditModeChanged = (newEditMode: boolean) => {
       sidePanel.value = newEditMode ? 'edit' : 'detail';
@@ -88,6 +100,7 @@ export default defineComponent({
 
     const handleNewProduct = () => {
       notifier.NotifySuccess(t('product.created'));
+      closeSidePanel();
     };
 
     const handleProductEdited = () => {
@@ -106,6 +119,7 @@ export default defineComponent({
       editingRow,
       readonlyEditMode,
       handleEditModeChanged,
+      duplicateProduct,
     };
   },
 });

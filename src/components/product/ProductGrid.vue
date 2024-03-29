@@ -62,7 +62,15 @@
               <div class="text-body2">{{ $t('buttons.detail') }}</div>
             </q-tooltip>
           </q-btn>
-          <q-btn icon="copy_all" round push color="grey" size="sm">
+          <q-btn
+            data-testid="duplicateproductbtn"
+            icon="copy_all"
+            round
+            push
+            color="grey"
+            size="sm"
+            @click="$emit('duplicate-row-click', props.row)"
+          >
             <q-tooltip>
               <div class="text-body2">{{ $t('buttons.duplicate') }}</div>
             </q-tooltip>
@@ -82,7 +90,12 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'ProductGrid',
-  emits: ['new-product-click', 'edit-row-click', 'detail-row-click'],
+  emits: [
+    'new-product-click',
+    'edit-row-click',
+    'detail-row-click',
+    'duplicate-row-click',
+  ],
 
   setup() {
     const { t } = useI18n();
