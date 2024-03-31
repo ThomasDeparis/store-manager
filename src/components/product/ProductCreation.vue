@@ -20,22 +20,7 @@
         lazy-rules
         :rules="[(val) => (val && val.length > 0) || $t('forms.mandatory')]"
       />
-      <q-input
-        filled
-        suffix="€"
-        mask="#.##"
-        fill-mask="0"
-        reverse-fill-mask
-        v-model="formFields.sellPrice"
-        input-class="text-right"
-        :label="$t('product.sellPrice')"
-        lazy-rules
-        :rules="[
-          (val) =>
-            (val !== null && val !== '' && val > 0) ||
-            $t('product.enterValidSellPrice'),
-        ]"
-      />
+      <price-input v-model="formFields.sellPrice" />
       <div class="row justify-center">
         <q-btn :label="$t('buttons.create')" type="submit" color="primary" />
       </div>
@@ -52,6 +37,7 @@ import { IProduct } from 'models/product/product';
 import { QForm } from 'quasar';
 
 import SidePanel from 'components/common/SidePanel.vue';
+import PriceInput from 'components/common/PriceInput.vue';
 
 export default defineComponent({
   name: 'ProductCreation',
@@ -62,7 +48,7 @@ export default defineComponent({
     },
   },
   emits: ['close', 'update:modelValue', 'product-creation-failed'],
-  components: { SidePanel },
+  components: { SidePanel, PriceInput },
 
   setup(props, context) {
     const form = ref<QForm>();

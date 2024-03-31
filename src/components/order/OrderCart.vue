@@ -15,19 +15,8 @@
               dense
               lazy-rules
               :rules="[(val) => val > 0 || $t('order.enterValidQuantity')]"
-            /><q-input
-              suffix="€"
-              mask="#.##"
-              fill-mask="0"
-              reverse-fill-mask
-              input-class="text-right"
-              :rules="[(val) => val >= 0.0 || $t('order.enterValidBuyPrice')]"
-              class="col-6 q-pa-sm"
-              v-model="p.unitPrice"
-              :label="$t('order.price')"
-              dense
-              lazy-rules
             />
+            <price-input v-model="p.unitPrice" />
           </q-item-label>
         </q-item-section>
       </q-item>
@@ -40,8 +29,13 @@
 import { IOrderRow } from 'src/models/order/order';
 import { PropType, defineComponent, computed } from 'vue';
 
+import PriceInput from 'components/common/PriceInput.vue';
+
 export default defineComponent({
   name: 'OrderCart',
+  components: {
+    PriceInput,
+  },
   props: {
     modelValue: {
       type: Object as PropType<IOrderRow[]>,

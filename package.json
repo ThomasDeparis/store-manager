@@ -13,7 +13,7 @@
     "build": "quasar build"
   },
   "dependencies": {
-    "@quasar/cli": "^2.3.0",
+    "@quasar/cli": "^2.4.0",
     "@quasar/extras": "^1.16.4",
     "firebase": "^10.7.1",
     "moment": "^2.30.1",
