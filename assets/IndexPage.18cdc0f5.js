@@ -1,0 +1,1 @@
+import{Q as e}from"./QPage.3b99b189.js";import{_ as a,d as t,H as o,I as n,J as s,P as r}from"./index.18c1dc6c.js";const c=t({name:"IndexPage"}),d=r("h2",null,"Page d'accueil",-1);function _(p,i,f,l,m,u){return o(),n(e,{padding:""},{default:s(()=>[d]),_:1})}var P=a(c,[["render",_]]);export{P as default};
