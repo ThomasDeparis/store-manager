@@ -160,10 +160,9 @@ export const useProductStore = defineStore('product', {
         );
         batch.set(newStockLogDoc, stockAdjustment);
 
-        const newQty: number =
-          (stockAdjustment.initialQuantity || 0) + stockAdjustment.adjustment;
         batch.update(productDoc, {
-          quantity: newQty,
+          quantity:
+            stockAdjustment.initialQuantity + stockAdjustment.adjustment,
         });
 
         if (globalBatch === undefined) {

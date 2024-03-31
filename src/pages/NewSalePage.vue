@@ -1,10 +1,11 @@
 <template>
   <q-page padding>
-    <h4>{{ $t('order.newOrder') }}</h4>
+    <h4>{{ $t('order.newSale') }}</h4>
     <order-creation
-      :recipient-id="providerId"
-      :recipients-list="providersList"
+      :recipient-id="customerId"
+      :recipients-list="customersList"
       @submit:order="(order) => onSubmit(order)"
+      :auto-sell-price="true"
     ></order-creation>
   </q-page>
 </template>
@@ -13,8 +14,8 @@
 import { defineComponent, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { useProviderStore } from 'stores/provider-store';
-import { IProviderOrder, IGenericOrder } from 'models/order/order';
+import { useCustomerStore } from 'stores/customer-store';
+import { IGenericOrder, ICustomerOrder } from 'models/order/order';
 import { useUserStore } from 'stores/user-store';
 import { useOrderStore } from 'stores/order-store';
 
@@ -26,10 +27,10 @@ import { IOrderError } from 'models/order/ordererror';
 import OrderCreation from 'components/order/OrderCreation.vue';
 
 export default defineComponent({
-  name: 'NewOrderPage',
+  name: 'NewSalePage',
   components: { OrderCreation },
   props: {
-    providerId: {
+    customerId: {
       type: String,
       required: false,
     },
@@ -37,13 +38,13 @@ export default defineComponent({
 
   setup() {
     const userStore = useUserStore();
-    const providerStore = useProviderStore();
+    const customerStore = useCustomerStore();
     const orderStore = useOrderStore();
     const notifier = useNotifyHandler();
     const router = useRouter();
 
     if (userStore.currentStore) {
-      providerStore.loadProviders(userStore.currentStore);
+      customerStore.loadCustomers(userStore.currentStore);
     }
 
     //load providers list after user is loaded
@@ -51,10 +52,10 @@ export default defineComponent({
       () => userStore.currentStore,
       () => {
         if (
-          providerStore.providers == null ||
-          providerStore.providers?.length === 0
+          customerStore.customers == null ||
+          customerStore.customers?.length === 0
         ) {
-          providerStore.loadProviders(userStore.currentStore);
+          customerStore.loadCustomers(userStore.currentStore);
         }
       }
     );
@@ -63,10 +64,10 @@ export default defineComponent({
       try {
         const { recipientId, ...otherAttrs } = order;
 
-        await orderStore.addProviderOrder({
-          providerId: recipientId,
+        await orderStore.addCustomerOrder({
+          customerId: recipientId,
           ...otherAttrs,
-        } as IProviderOrder);
+        } as ICustomerOrder);
 
         notifier.NotifySuccess(t('order.created'));
         router.push({ name: 'orders' });
@@ -76,7 +77,7 @@ export default defineComponent({
     };
 
     return {
-      providersList: computed(() => providerStore.providers),
+      customersList: computed(() => customerStore.customers),
       onSubmit,
     };
   },

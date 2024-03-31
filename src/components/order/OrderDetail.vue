@@ -5,14 +5,14 @@
   >
     <div>
       <p class="q-my-md q-mx-sm">
-        {{ $t('order.provider') }} : {{ providerName }}
+        {{ $t('order.provider') }} : {{ recipientName }}
       </p>
       <p class="q-ma-sm">
         {{ $t('order.orderDate') }} : {{ order.orderDate.toLocaleDateString() }}
       </p>
       <p class="q-ma-sm">
         {{ $t('order.receiptDate') }} :
-        {{ order.receiptDate?.toLocaleDateString() }}
+        {{ receiptDate?.toLocaleDateString() }}
       </p>
     </div>
     <div class="q-my-md">
@@ -50,11 +50,13 @@
 </template>
 
 <script lang="ts">
-import { IOrder, IOrderRow } from 'models/order/order';
+import { ICustomerOrder, IOrderRow, IProviderOrder } from 'models/order/order';
 import { PropType, defineComponent, computed } from 'vue';
 
 import SidePanel from 'components/common/SidePanel.vue';
 import { useProviderStore } from 'stores/provider-store';
+import { IProduct } from 'models/product/product';
+import { useCustomerStore } from 'stores/customer-store';
 
 export default defineComponent({
   name: 'OrderDetail',
@@ -62,18 +64,34 @@ export default defineComponent({
   emits: ['close'],
   props: {
     modelValue: {
-      type: Object as PropType<IOrder>,
+      type: Object as PropType<IProviderOrder | ICustomerOrder>,
       required: true,
     },
   },
   setup(props) {
     const order = computed(() => props.modelValue);
-    const providerStore = useProviderStore();
+    const isProviderOrder = computed(() => 'providerId' in order.value);
 
-    const providerName = computed(() => {
-      return providerStore.providers.find(
-        (p) => p.id === order.value.providerId
-      )?.name;
+    const providerStore = useProviderStore();
+    const customerStore = useCustomerStore();
+
+    const recipientName = computed(() => {
+      if (isProviderOrder.value) {
+        const { providerId } = <IProviderOrder>order.value;
+        return providerStore.providers.find((p) => p.id === providerId)?.name;
+      } else {
+        const { customerId } = <ICustomerOrder>order.value;
+        return customerStore.customers.find((p) => p.id === customerId)?.name;
+      }
+    });
+
+    const receiptDate = computed(() => {
+      if (isProviderOrder.value) {
+        const { receiptDate } = <IProviderOrder>order.value;
+        return receiptDate;
+      } else {
+        return order.value.orderDate;
+      }
     });
 
     const totalAmount = computed(() => {
@@ -86,8 +104,10 @@ export default defineComponent({
 
     return {
       order,
-      providerName,
+      recipientName,
       totalAmount,
+      isProviderOrder,
+      receiptDate,
     };
   },
 });

@@ -10,17 +10,31 @@ export interface IOrderRow {
 
 export interface IOrder {
   id: string;
-  providerId: string;
   reference: string;
   orderDate: Date;
-  receiptDate?: Date;
   storeId: string;
   products: IOrderRow[];
 }
 
+export interface IRecipient {
+  id: string;
+  name: string;
+}
+export interface IGenericOrder extends IOrder {
+  recipientId: string;
+}
+
+export interface IProviderOrder extends IOrder {
+  providerId: string;
+  receiptDate?: Date;
+}
+
+export interface ICustomerOrder extends IOrder {
+  customerId: string;
+}
+
 export interface IOrderState {
   orders: IOrder[];
-  error?: string | null;
   isLoading: boolean;
   storeId: string;
 }

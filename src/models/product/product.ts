@@ -5,7 +5,7 @@ export type ProductStockLogType = 'order' | 'sale';
 export interface IProductStockLog {
   id: string;
   type: ProductStockLogType;
-  initialQuantity?: number;
+  initialQuantity: number;
   adjustment: number;
   date: Timestamp;
   documentId?: string;

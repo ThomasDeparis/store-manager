@@ -1,52 +1,96 @@
 import { defineStore } from 'pinia';
-import { IOrder, IOrderRow, IOrderState } from 'src/models/order/order';
+import {
+  ICustomerOrder,
+  IOrder,
+  IOrderRow,
+  IOrderState,
+  IProviderOrder,
+} from 'models/order/order';
 import { ErrorType } from 'models/errortype';
 import { db } from 'src/firebase.config';
 import {
   collection,
   doc,
-  setDoc,
   Timestamp,
   query,
   where,
   getDocs,
   writeBatch,
+  WriteBatch,
 } from 'firebase/firestore';
 import { IOrderError } from 'src/models/order/ordererror';
 
 import { useProductStore } from './product-store';
 import { IProductStockLog } from 'src/models/product/product';
 
+const addOrderMainInfo = (
+  batch: WriteBatch,
+  order: IProviderOrder | ICustomerOrder
+): WriteBatch => {
+  const newOrder = doc(collection(db, 'orders'));
+  order.id = newOrder.id; //copy the generated document id into id field
+
+  const { orderDate, products, ...otherInfo } = order;
+  batch.set(newOrder, {
+    orderDate: Timestamp.fromDate(orderDate),
+    ...otherInfo,
+  });
+
+  //order's products in sub collection
+  const productsCol = collection(newOrder, 'products');
+  for (const p of products ?? []) {
+    const newProduct = doc(productsCol);
+    p.id = newProduct.id;
+    batch.set(newProduct, p);
+  }
+
+  return batch;
+};
+
 export const useOrderStore = defineStore('order', {
   state: (): IOrderState => {
     return {
       orders: [],
-      error: null,
       isLoading: false,
       storeId: '',
     };
   },
   actions: {
-    async addOrder(order: IOrder) {
+    async addProviderOrder(order: IProviderOrder) {
       try {
-        const newOrder = doc(collection(db, 'orders'));
-        order.id = newOrder.id; //copy the generated document id into id field
-        await setDoc(newOrder, {
-          id: order.id,
-          providerId: order.providerId,
-          reference: order.reference,
-          orderDate: Timestamp.fromDate(order.orderDate),
-          storeId: order.storeId,
-        });
+        const batch = writeBatch(db);
+        await addOrderMainInfo(batch, order).commit();
+        this.orders.push(order);
+      } catch (error: any) {
+        console.log(error);
+        const pError = {
+          orderReference: order.reference,
+          errorType: ErrorType.Technical,
+          message: error.toString(),
+        } as IOrderError;
 
-        //order's products in sub collection
-        const productsCol = collection(newOrder, 'products');
-        for (const p of order?.products ?? []) {
-          const newProduct = doc(productsCol);
-          p.id = newProduct.id;
-          await setDoc(newProduct, p);
+        throw pError;
+      }
+    },
+    async addCustomerOrder(order: ICustomerOrder) {
+      const productStore = useProductStore();
+      const validationDate = Timestamp.now();
+
+      try {
+        let batch = writeBatch(db);
+        batch = addOrderMainInfo(batch, order);
+
+        //update products quantities
+        for (const p of order.products) {
+          const stockLog = {
+            type: 'sale',
+            adjustment: -Math.abs(p.orderedQty),
+            date: validationDate,
+            documentId: order.id,
+          } as IProductStockLog;
+          await productStore.updateStock(p.productId, stockLog, batch);
         }
-
+        await batch.commit();
         this.orders.push(order);
       } catch (error: any) {
         console.log(error);
@@ -127,7 +171,7 @@ export const useOrderStore = defineStore('order', {
 
           const stockLog = {
             type: 'order',
-            adjustment: p.receivedQty,
+            adjustment: Math.abs(p.receivedQty || 0),
             date: validationDate,
             documentId: orderId,
           } as IProductStockLog;
@@ -148,7 +192,7 @@ export const useOrderStore = defineStore('order', {
 
           throw error;
         }
-        const storeOrder = this.orders[i];
+        const storeOrder = <IProviderOrder>this.orders[i];
         storeOrder.receiptDate = validationDate.toDate();
       } catch (e: any) {
         console.log(e);

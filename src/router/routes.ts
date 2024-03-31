@@ -41,6 +41,17 @@ const routes: RouteRecordRaw[] = [
         path: 'orders/new',
         component: () => import('pages/NewOrderPage.vue'),
       },
+      {
+        name: 'customer-neworder',
+        path: 'customers/:customerId/orders/new',
+        component: () => import('pages/NewSalePage.vue'),
+        props: true,
+      },
+      {
+        name: 'newsale',
+        path: 'sales/new',
+        component: () => import('pages/NewSalePage.vue'),
+      },
     ],
   },
 
