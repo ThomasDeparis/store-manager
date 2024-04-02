@@ -37,24 +37,10 @@
         lazy-rules
         :rules="[(val) => (val && val.length > 0) || $t('forms.mandatory')]"
       />
-      <q-input
-        filled
-        suffix="€"
-        mask="#.##"
-        fill-mask="0"
-        reverse-fill-mask
-        data-testid="sellpriceinput"
-        v-model="editing.sellPrice"
-        input-class="text-right"
+      <price-input
+        :model-value="editing.sellPrice"
         :label="$t('product.sellPrice')"
-        :readonly="isReadonly"
-        lazy-rules
-        :rules="[
-          (val) =>
-            (val !== null && val !== '' && val > 0) ||
-            $t('product.enterValidSellPrice'),
-        ]"
-      />
+      ></price-input>
       <div class="row justify-center">
         <q-btn
           v-if="!isReadonly"
@@ -75,6 +61,7 @@ import { useUserStore } from 'stores/user-store';
 import { IProduct } from 'src/models/product/product';
 
 import SidePanel from 'components/common/SidePanel.vue';
+import PriceInput from 'components/common/PriceInput.vue';
 
 export default defineComponent({
   name: 'ProductEdit',
@@ -94,7 +81,7 @@ export default defineComponent({
     'update:readonlyMode',
     'product-edit-failed',
   ],
-  components: { SidePanel },
+  components: { SidePanel, PriceInput },
 
   setup(props, context) {
     const editing = computed(() => props.modelValue);

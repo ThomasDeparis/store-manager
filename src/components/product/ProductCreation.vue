@@ -20,7 +20,10 @@
         lazy-rules
         :rules="[(val) => (val && val.length > 0) || $t('forms.mandatory')]"
       />
-      <price-input v-model="formFields.sellPrice" />
+      <price-input
+        v-model="formFields.sellPrice"
+        :label="$t('product.sellPrice')"
+      />
       <div class="row justify-center">
         <q-btn :label="$t('buttons.create')" type="submit" color="primary" />
       </div>

@@ -16,7 +16,7 @@
               lazy-rules
               :rules="[(val) => val > 0 || $t('order.enterValidQuantity')]"
             />
-            <price-input v-model="p.unitPrice" />
+            <price-input v-model="p.unitPrice" :label="$t('order.price')" />
           </q-item-label>
         </q-item-section>
       </q-item>

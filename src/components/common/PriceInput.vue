@@ -8,7 +8,7 @@
     :rules="[(val) => val >= 0.0 || $t('order.enterValidBuyPrice')]"
     class="col-6 q-pa-sm"
     v-model="price"
-    :label="$t('order.orderPrice')"
+    :label="label"
     dense
     lazy-rules
   />
@@ -29,13 +29,20 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const price = ref(props.modelValue);
+    const price = ref(props.modelValue.toFixed(2));
+
+    watch(
+      () => props.modelValue,
+      (newValue) => {
+        price.value = newValue.toFixed(2);
+      }
+    );
 
     // force to type number
     watch(
       () => price.value,
       (newPrice) => {
-        emit('update:modelValue', Number(newPrice));
+        emit('update:modelValue', Number(newPrice).toFixed(2));
       }
     );
 
