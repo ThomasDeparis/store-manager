@@ -83,7 +83,9 @@
         ></product-selection-grid>
       </div>
       <div class="col-4 q-pa-sm">
-        {{ cartContent?.length || 0 }} {{ $t('order.addedProducts') }}
+        <p>{{ cartContent?.length || 0 }} {{ $t('order.addedProducts') }}</p>
+        <p>{{ $t('order.totalAmount') }} : {{ totalAmount }} €</p>
+
         <order-cart v-model="cartContent"></order-cart>
       </div>
     </div>
@@ -182,6 +184,16 @@ export default defineComponent({
       emit('submit:order', order);
     };
 
+    const totalAmount = computed(() => {
+      return cartContent.value
+        .reduce(
+          (total: number, p: IOrderRow) =>
+            total + (p?.unitPrice || 0) * (p?.orderedQty || 0),
+          0
+        )
+        ?.toFixed(2);
+    });
+
     return {
       orderForm,
       selectedRecipient,
@@ -192,6 +204,7 @@ export default defineComponent({
       selectedProducts,
       cartContent,
       onSubmit,
+      totalAmount,
     };
   },
 });

@@ -5,14 +5,10 @@
   >
     <div>
       <p class="q-my-md q-mx-sm">
-        {{ $t('order.provider') }} : {{ recipientName }}
+        {{ $t('order.customer') }} : {{ recipientName }}
       </p>
       <p class="q-ma-sm">
         {{ $t('order.orderDate') }} : {{ order.orderDate.toLocaleDateString() }}
-      </p>
-      <p class="q-ma-sm">
-        {{ $t('order.receiptDate') }} :
-        {{ order?.receiptDate?.toLocaleDateString() }}
       </p>
     </div>
     <div class="q-my-md">
@@ -29,9 +25,6 @@
               <q-item-label overline>{{ p.productReference }}</q-item-label>
               <q-item-label class="q-mb-sm">{{ p.productName }}</q-item-label>
               <q-item-label class="row">
-                {{ $t('order.shortReceivedQty') }} : {{ p.receivedQty }}
-              </q-item-label>
-              <q-item-label class="row" caption>
                 {{ $t('order.shortQty') }} : {{ p.orderedQty }}
               </q-item-label>
               <q-item-label class="row">
@@ -50,37 +43,36 @@
 </template>
 
 <script lang="ts">
-import { IOrderRow, IProviderOrder } from 'models/order/order';
+import { ISale, IOrderRow } from 'models/order/order';
 import { PropType, defineComponent, computed } from 'vue';
 
 import SidePanel from 'components/common/SidePanel.vue';
-import { useProviderStore } from 'stores/provider-store';
+import { useCustomerStore } from 'stores/customer-store';
 
 export default defineComponent({
-  name: 'OrderDetail',
+  name: 'SaleDetail',
   components: { SidePanel },
   emits: ['close'],
   props: {
     modelValue: {
-      type: Object as PropType<IProviderOrder>,
+      type: Object as PropType<ISale>,
       required: true,
     },
   },
   setup(props) {
     const order = computed(() => props.modelValue);
-
-    const providerStore = useProviderStore();
+    const customerStore = useCustomerStore();
 
     const recipientName = computed(() => {
-      return providerStore.providers.find(
-        (p) => p.id === order.value.providerId
+      return customerStore.customers.find(
+        (p) => p.id === order.value.customerId
       )?.name;
     });
 
     const totalAmount = computed(() => {
       return order.value?.products?.reduce(
         (total: number, p: IOrderRow) =>
-          total + p.unitPrice * (p?.receivedQty || 0),
+          total + p.unitPrice * (p?.orderedQty || 0),
         0
       );
     });

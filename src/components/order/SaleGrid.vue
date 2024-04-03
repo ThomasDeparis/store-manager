@@ -12,7 +12,7 @@
       <template v-slot:top>
         <q-btn
           color="primary"
-          :label="$t('order.newOrder')"
+          :label="$t('order.newSale')"
           @click="$emit('new-order-click')"
         />
         <q-space />
@@ -27,21 +27,6 @@
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
           <q-btn
-            v-if="props.row.receiptDate === undefined"
-            class="q-mr-sm"
-            icon="check_circle"
-            push
-            round
-            color="green"
-            size="sm"
-            @click="$emit('confirm-row-click', props.row)"
-          >
-            <q-tooltip>
-              <div class="text-body2">{{ $t('order.confirm') }}</div>
-            </q-tooltip>
-          </q-btn>
-          <q-btn
-            v-if="props.row.receiptDate"
             data-testid="detailorderbtn"
             class="q-mr-sm"
             icon="visibility"
@@ -64,21 +49,21 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import { useOrderStore } from 'stores/order-store';
-import { useProviderStore } from 'stores/provider-store';
+import { useCustomerStore } from 'stores/customer-store';
 import { useUserStore } from 'stores/user-store';
 import { QTableProps } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import moment from 'moment';
 
 export default defineComponent({
-  name: 'OrderGrid',
-  emits: ['new-order-click', 'confirm-row-click', 'detail-row-click'],
+  name: 'SaleGrid',
+  emits: ['new-order-click', 'detail-row-click'],
 
   setup() {
     const { t } = useI18n();
     const ordersStore = useOrderStore();
     const user = useUserStore();
-    const providerStore = useProviderStore();
+    const customerStore = useCustomerStore();
 
     const columns = [
       {
@@ -93,9 +78,9 @@ export default defineComponent({
         sortable: true,
       },
       {
-        name: 'provider',
-        label: t('order.provider'),
-        field: 'providerName',
+        name: 'Customer',
+        label: t('order.customer'),
+        field: 'customerName',
       },
       {
         name: 'orderDate',
@@ -104,43 +89,35 @@ export default defineComponent({
         sortable: true,
         format: (val: Date) => moment(val).format('DD/MM/YYYY'),
       },
-      {
-        name: 'receiptDate',
-        label: t('order.receiptDate'),
-        field: 'receiptDate',
-        sortable: true,
-        format: (val: Date) =>
-          val ? moment(val).format('DD/MM/YYYY HH:mm') : '',
-      },
     ] as QTableProps['columns'];
 
     const loadStores = () => {
       if (
-        ordersStore.providerOrders == null ||
-        ordersStore.providerOrders?.length === 0 ||
+        ordersStore.customerOrders == null ||
+        ordersStore.customerOrders?.length === 0 ||
         ordersStore.storeId !== user.currentStore
       ) {
-        ordersStore.loadProviderOrders(user.currentStore);
+        ordersStore.loadCustomerOrders(user.currentStore);
       }
 
       if (
-        providerStore.providers == null ||
-        providerStore.providers?.length === 0 ||
-        providerStore.storeId !== user.currentStore
+        customerStore.customers == null ||
+        customerStore.customers?.length === 0 ||
+        customerStore.storeId !== user.currentStore
       ) {
-        providerStore.loadProviders(user.currentStore);
+        customerStore.loadCustomers(user.currentStore);
       }
     };
 
-    const providers = computed(() => {
-      return providerStore.providers;
+    const customers = computed(() => {
+      return customerStore.customers;
     });
 
     const ordersRows = computed(() => {
-      return ordersStore.providerOrders.map(function (o) {
+      return ordersStore.customerOrders.map(function (o) {
         return {
           ...o,
-          providerName: providers.value.find((p) => p.id === o.providerId)
+          customerName: customers.value.find((p) => p.id === o.customerId)
             ?.name,
           actions: null, // to match with actions column
         };

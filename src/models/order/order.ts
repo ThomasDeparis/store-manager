@@ -29,12 +29,13 @@ export interface IProviderOrder extends IOrder {
   receiptDate?: Date;
 }
 
-export interface ICustomerOrder extends IOrder {
+export interface ISale extends IOrder {
   customerId: string;
 }
 
 export interface IOrderState {
-  orders: IOrder[];
+  providerOrders: IProviderOrder[];
+  customerOrders: ISale[];
   isLoading: boolean;
   storeId: string;
 }

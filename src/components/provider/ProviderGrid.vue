@@ -68,7 +68,6 @@
         </q-td>
       </template>
     </q-table>
-    <q-btn icon="search" @click="loadProviders"></q-btn>
   </div>
 </template>
 

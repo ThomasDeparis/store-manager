@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
+import { defineComponent, Ref, ref, watch } from 'vue';
 export default defineComponent({
   name: 'PriceInput',
   emits: ['update:modelValue'],
@@ -29,12 +29,13 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const price = ref(props.modelValue.toFixed(2));
+    const formatPrice = (value: string | number) => Number(value)?.toFixed(2);
+    const price = ref(formatPrice(props.modelValue));
 
     watch(
       () => props.modelValue,
       (newValue) => {
-        price.value = newValue.toFixed(2);
+        price.value = formatPrice(newValue);
       }
     );
 
@@ -42,7 +43,7 @@ export default defineComponent({
     watch(
       () => price.value,
       (newPrice) => {
-        emit('update:modelValue', Number(newPrice).toFixed(2));
+        emit('update:modelValue', formatPrice(newPrice));
       }
     );
 

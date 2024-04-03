@@ -90,6 +90,12 @@ export default defineComponent({
         icon: 'shopping_cart',
         routeName: 'orders',
       },
+      {
+        title: t('menu.sales'),
+        caption: '',
+        icon: 'shopping_cart',
+        routeName: 'sales',
+      },
     ];
 
     onMounted(() => {

@@ -1,24 +1,13 @@
 <template>
   <q-page>
-    <order-grid
+    <sale-grid
       @new-order-click="gotoNewOrder"
-      @confirm-row-click="(row) => openSidePanel('confirm', row)"
       @detail-row-click="(row) => openSidePanel('detail', row)"
-    ></order-grid>
+    ></sale-grid>
   </q-page>
 
-  <q-drawer :model-value="sidePanel === 'confirm'" side="right" bordered>
-    <order-confirm
-      :order-id="editingRow.id"
-      v-model="editingRow.products"
-      :order-reference="editingRow.reference"
-      @order-confirmed="handleOrderConfirmed"
-      @order-confirm-error="handleError"
-      @close="closeSidePanel"
-    ></order-confirm>
-  </q-drawer>
   <q-drawer :model-value="sidePanel === 'detail'" side="right" bordered>
-    <order-detail v-model="editingRow" @close="closeSidePanel"></order-detail>
+    <sale-detail v-model="editingRow" @close="closeSidePanel"></sale-detail>
   </q-drawer>
 </template>
 
@@ -27,21 +16,20 @@ import { defineComponent, ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-import OrderGrid from 'components/order/OrderGrid.vue';
-import OrderConfirm from 'components/order/OrderConfirm.vue';
-import OrderDetail from 'components/order/OrderDetail.vue';
+import SaleGrid from 'components/order/SaleGrid.vue';
+import SaleDetail from 'components/order/SaleDetail.vue';
 
 import useNotifyHandler from 'hooks/notify-handler';
 import { useDialogPluginComponent } from 'quasar';
-import { IOrder, IProviderOrder } from 'models/order/order';
+import { IOrder, ISale } from 'models/order/order';
 
 import { useOrderStore } from 'stores/order-store';
 import { IOrderError } from 'models/order/ordererror';
 import { handleOrderError } from 'utils/order-error-handler';
 
 export default defineComponent({
-  name: 'OrdersPage',
-  components: { OrderGrid, OrderConfirm, OrderDetail },
+  name: 'SalesPage',
+  components: { SaleGrid, SaleDetail },
   emits: [...useDialogPluginComponent.emits],
 
   setup() {
@@ -53,22 +41,22 @@ export default defineComponent({
 
     const gotoNewOrder = () => {
       router.push({
-        name: 'neworder',
+        name: 'newsale',
       });
     };
 
-    const emptyRow: IProviderOrder = {
+    const emptyRow: ISale = {
       id: '',
-      providerId: '',
+      customerId: '',
       reference: '',
       orderDate: new Date(),
       storeId: '',
       products: [],
     };
 
-    const editingRow = ref<IProviderOrder>(emptyRow);
+    const editingRow = ref<ISale>(emptyRow);
 
-    type PanelMode = 'confirm' | 'detail' | null;
+    type PanelMode = 'detail' | null;
     var sidePanel: Ref<PanelMode> = ref(null);
 
     const openSidePanel = (mode: PanelMode, row: IOrder) => {
@@ -78,7 +66,7 @@ export default defineComponent({
         }
 
         sidePanel.value = mode;
-        const reloadedOrder = orderStore.providerOrders.find(
+        const reloadedOrder = orderStore.customerOrders.find(
           (o) => o.id === row.id
         );
 
@@ -98,11 +86,6 @@ export default defineComponent({
       editingRow.value = emptyRow;
     };
 
-    const handleOrderConfirmed = () => {
-      closeSidePanel();
-      notifier.NotifySuccess(t('order.received'));
-    };
-
     const handleError = (error: IOrderError) => {
       notifier.NotifyError(handleOrderError(error));
     };
@@ -114,7 +97,6 @@ export default defineComponent({
       sidePanel,
       openSidePanel,
       closeSidePanel,
-      handleOrderConfirmed,
       handleError,
     };
   },

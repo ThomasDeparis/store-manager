@@ -15,7 +15,7 @@ import { defineComponent, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useCustomerStore } from 'stores/customer-store';
-import { IGenericOrder, ICustomerOrder } from 'models/order/order';
+import { IGenericOrder, ISale } from 'models/order/order';
 import { useUserStore } from 'stores/user-store';
 import { useOrderStore } from 'stores/order-store';
 
@@ -67,7 +67,7 @@ export default defineComponent({
         await orderStore.addCustomerOrder({
           customerId: recipientId,
           ...otherAttrs,
-        } as ICustomerOrder);
+        } as ISale);
 
         notifier.NotifySuccess(t('order.created'));
         router.push({ name: 'orders' });

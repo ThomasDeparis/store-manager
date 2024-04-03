@@ -53,6 +53,7 @@ export default {
   },
   order: {
     newOrder: 'Nouvelle commande fournisseur',
+    newSale: 'Nouvelle commande client',
     reference: 'Référence commande',
     orderDate: 'Date de la commande',
     receiptDate: 'Date de réception',
@@ -71,11 +72,14 @@ export default {
     confirm: 'Finaliser la commande',
     confirmError: 'Erreur technique lors de la validation de la commande',
     totalAmount: 'Total de la commande',
+    recipient: 'Destinataire',
+    customer: 'Client',
   },
   menu: {
     menu: 'Menu',
     products: 'Produits',
     providers: 'Fournisseurs',
     orders: 'Commandes fournisseurs',
+    sales: 'Commandes clients',
   },
 };

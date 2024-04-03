@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import {
-  ICustomerOrder,
+  ISale,
   IOrder,
   IOrderRow,
   IOrderState,
@@ -17,6 +17,7 @@ import {
   getDocs,
   writeBatch,
   WriteBatch,
+  and,
 } from 'firebase/firestore';
 import { IOrderError } from 'src/models/order/ordererror';
 
@@ -25,7 +26,7 @@ import { IProductStockLog } from 'src/models/product/product';
 
 const addOrderMainInfo = (
   batch: WriteBatch,
-  order: IProviderOrder | ICustomerOrder
+  order: IProviderOrder | ISale
 ): WriteBatch => {
   const newOrder = doc(collection(db, 'orders'));
   order.id = newOrder.id; //copy the generated document id into id field
@@ -50,7 +51,8 @@ const addOrderMainInfo = (
 export const useOrderStore = defineStore('order', {
   state: (): IOrderState => {
     return {
-      orders: [],
+      providerOrders: [],
+      customerOrders: [],
       isLoading: false,
       storeId: '',
     };
@@ -60,7 +62,7 @@ export const useOrderStore = defineStore('order', {
       try {
         const batch = writeBatch(db);
         await addOrderMainInfo(batch, order).commit();
-        this.orders.push(order);
+        this.providerOrders.push(order);
       } catch (error: any) {
         console.log(error);
         const pError = {
@@ -72,7 +74,7 @@ export const useOrderStore = defineStore('order', {
         throw pError;
       }
     },
-    async addCustomerOrder(order: ICustomerOrder) {
+    async addCustomerOrder(order: ISale) {
       const productStore = useProductStore();
       const validationDate = Timestamp.now();
 
@@ -91,7 +93,7 @@ export const useOrderStore = defineStore('order', {
           await productStore.updateStock(p.productId, stockLog, batch);
         }
         await batch.commit();
-        this.orders.push(order);
+        this.customerOrders.push(order);
       } catch (error: any) {
         console.log(error);
         const pError = {
@@ -103,14 +105,20 @@ export const useOrderStore = defineStore('order', {
         throw pError;
       }
     },
-    async loadOrders(storeId: string) {
+    async loadProviderOrders(storeId: string) {
       this.isLoading = true;
-      this.orders = [];
+      this.providerOrders = [];
       this.storeId = storeId;
       const providersCol = collection(db, 'orders');
-      const q = query(providersCol, where('storeId', '==', storeId));
+      const q = query(
+        providersCol,
+        and(
+          where('storeId', '==', storeId),
+          where('providerId', 'not-in', [''])
+        )
+      );
       const querySnapshot = await getDocs(q);
-      this.orders = querySnapshot.docs.map(function (p) {
+      this.providerOrders = querySnapshot.docs.map(function (p) {
         return {
           id: p.id,
           reference: p.data()?.reference,
@@ -119,13 +127,45 @@ export const useOrderStore = defineStore('order', {
           providerId: p.data()?.providerId,
           storeId: p.data()?.storeId,
           products: [],
-        } as IOrder;
+        } as IProviderOrder;
+      });
+      this.isLoading = false;
+    },
+
+    async loadCustomerOrders(storeId: string) {
+      this.isLoading = true;
+      this.customerOrders = [];
+      this.storeId = storeId;
+      const ordersCol = collection(db, 'orders');
+      const q = query(
+        ordersCol,
+        and(
+          where('storeId', '==', storeId),
+          where('customerId', 'not-in', [''])
+        )
+      );
+      const querySnapshot = await getDocs(q);
+      this.customerOrders = querySnapshot.docs.map(function (p) {
+        return {
+          id: p.id,
+          reference: p.data()?.reference,
+          orderDate: p.data()?.orderDate?.toDate(),
+          receiptDate: p.data()?.receiptDate?.toDate(),
+          customerId: p.data()?.customerId,
+          storeId: p.data()?.storeId,
+          products: [],
+        } as ISale;
       });
       this.isLoading = false;
     },
 
     async loadOrderProducts(orderId: string): Promise<IOrder> {
-      const order = this.orders.find((o) => o.id === orderId);
+      let order: IOrder = this.providerOrders.find(
+        (o) => o.id === orderId
+      ) as IOrder;
+      if (!order) {
+        order = this.customerOrders.find((o) => o.id === orderId) as IOrder;
+      }
 
       if (!order) {
         const oError = {
@@ -181,7 +221,7 @@ export const useOrderStore = defineStore('order', {
         await batch.commit();
 
         //update order in store
-        const i = this.orders.findIndex((o) => o.id === orderId);
+        const i = this.providerOrders.findIndex((o) => o.id === orderId);
         if (i < 0) {
           const error = {
             productReference: orderId,
@@ -192,7 +232,7 @@ export const useOrderStore = defineStore('order', {
 
           throw error;
         }
-        const storeOrder = <IProviderOrder>this.orders[i];
+        const storeOrder = <IProviderOrder>this.providerOrders[i];
         storeOrder.receiptDate = validationDate.toDate();
       } catch (e: any) {
         console.log(e);
