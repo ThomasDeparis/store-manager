@@ -14,7 +14,7 @@
         <q-toolbar-title
           >Store Manager
           <q-badge outline align="middle" color="white">
-            v0.0.1
+            v0.1.0
           </q-badge></q-toolbar-title
         >
         <q-icon v-if="!!user?.email" name="account_circle" size="sm"></q-icon>
