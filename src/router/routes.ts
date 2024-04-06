@@ -8,17 +8,17 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'index',
         path: '',
-        component: () => import('src/pages/IndexPage.vue'),
+        component: () => import('pages/IndexPage.vue'),
       },
       {
         name: 'products',
         path: 'products',
-        component: () => import('src/pages/ProductsPage.vue'),
+        component: () => import('pages/ProductsPage.vue'),
       },
       {
         name: 'providers',
         path: 'providers',
-        component: () => import('src/pages/ProvidersPage.vue'),
+        component: () => import('pages/ProvidersPage.vue'),
       },
       {
         name: 'signin',
@@ -42,9 +42,14 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/NewOrderPage.vue'),
       },
       {
+        name: 'customers',
+        path: 'customers',
+        component: () => import('pages/CustomersPage.vue'),
+      },
+      {
         name: 'sales',
         path: 'sales',
-        component: () => import('src/pages/SalesPage.vue'),
+        component: () => import('pages/SalesPage.vue'),
       },
       {
         name: 'customer-newsale',

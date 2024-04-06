@@ -33,8 +33,10 @@ export const useCustomerStore = defineStore('customer', {
         return {
           id: p.id,
           name: p.data()?.name,
-          phone: p.data()?.phone,
+          address: p.data()?.address,
+          country: p.data()?.country,
           email: p.data()?.email,
+          phone: p.data()?.phone,
           storeId: p.data()?.storeId,
           lastChangeUserId: p.data()?.lastChangeUserId,
         } as ICustomer;
@@ -50,7 +52,7 @@ export const useCustomerStore = defineStore('customer', {
         this.customers.push(customer);
       } catch (error: any) {
         const pError = {
-          productReference: customer.name,
+          customerName: customer.name,
           errorType: ErrorType.Technical,
           message: error.toString(),
         } as ICustomerError;
@@ -58,44 +60,49 @@ export const useCustomerStore = defineStore('customer', {
         throw pError;
       }
     },
-    // async editCustomer(edited: ICustomer) {
-    //   try {
-    //     const customerDoc = doc(collection(db, 'customers'), edited.id);
+    async editCustomer(edited: ICustomer) {
+      try {
+        const customerDoc = doc(collection(db, 'customers'), edited.id);
+        console.log(edited);
 
-    //     await updateDoc(customerDoc, {
-    //       name: edited.name,
-    //       email: edited.email,
-    //       phone: edited.phone,
-    //       lastChangeUserId: edited.lastChangeUserId,
-    //     });
+        await updateDoc(customerDoc, {
+          name: edited.name,
+          address: edited?.address || null,
+          country: edited?.country || null,
+          email: edited?.email || null,
+          phone: edited?.phone || null,
+          lastChangeUserId: edited?.lastChangeUserId,
+        });
 
-    //     const i = this.customers.findIndex(
-    //       (p) => p.id === edited.id && p.storeId === edited.storeId
-    //     );
-    //     if (i < 0) {
-    //       const error = {
-    //         customerName: edited.id,
-    //         errorType: ErrorType.Technical,
-    //         message:
-    //           'customerStore.editCustomer : cannot find customer in store to edit it',
-    //       } as ICustomerError;
+        const i = this.customers.findIndex(
+          (p) => p.id === edited.id && p.storeId === edited.storeId
+        );
+        if (i < 0) {
+          const error = {
+            customerName: edited.id,
+            errorType: ErrorType.Technical,
+            message:
+              'customerStore.editCustomer : cannot find customer in store to edit it',
+          } as ICustomerError;
 
-    //       throw error;
-    //     }
-    //     const changed = this.customers[i];
-    //     changed.name = edited.name;
-    //     changed.email = edited.email;
-    //     changed.phone = edited.phone;
-    //     changed.lastChangeUserId = edited.lastChangeUserId;
-    //   } catch (error: any) {
-    //     const pError = {
-    //       customerName: edited.id,
-    //       errorType: ErrorType.Technical,
-    //       message: error.toString(),
-    //     } as ICustomerError;
+          throw error;
+        }
+        const changed = this.customers[i];
+        changed.name = edited.name;
+        changed.address = edited.address;
+        changed.country = edited.country;
+        changed.email = edited.email;
+        changed.phone = edited.phone;
+        changed.lastChangeUserId = edited.lastChangeUserId;
+      } catch (error: any) {
+        const pError = {
+          customerName: edited.id,
+          errorType: ErrorType.Technical,
+          message: error.toString(),
+        } as ICustomerError;
 
-    //     throw pError;
-    //   }
-    // },
+        throw pError;
+      }
+    },
   },
 });

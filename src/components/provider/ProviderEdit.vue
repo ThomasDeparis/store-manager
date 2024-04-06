@@ -28,8 +28,7 @@
       />
       <q-input
         filled
-        prefix="+33"
-        mask="# ## ## ## ##"
+        mask="+33# ## ## ## ##"
         reverse-fill-mask
         v-model="editing.phone"
         :label="$t('provider.phone')"

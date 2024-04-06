@@ -1,6 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 
 const baseUrl = 'https://thomasdeparis.github.io/store-manager/#';
+// const baseUrl = 'http://localhost:8080/#';
 
 const delay = (milliseconds: number) => {
   return new Promise((resolve) => {

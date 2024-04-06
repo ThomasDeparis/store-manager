@@ -3,6 +3,8 @@ export interface ICustomer {
   name: string;
   address?: string;
   country?: string;
+  phone?: string;
+  email?: string;
   storeId: string;
   lastChangeUserId?: string;
 }

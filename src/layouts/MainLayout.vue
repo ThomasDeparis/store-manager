@@ -91,9 +91,15 @@ export default defineComponent({
         routeName: 'orders',
       },
       {
+        title: t('menu.customers'),
+        caption: '',
+        icon: 'person',
+        routeName: 'customers',
+      },
+      {
         title: t('menu.sales'),
         caption: '',
-        icon: 'shopping_cart',
+        icon: 'shopping_bag',
         routeName: 'sales',
       },
     ];

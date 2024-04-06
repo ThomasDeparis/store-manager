@@ -75,11 +75,21 @@ export default {
     recipient: 'Destinataire',
     customer: 'Client',
   },
+  customer: {
+    newCustomer: 'Nouveau client',
+    name: 'Nom client',
+    address: 'Adresse',
+    country: 'Pays',
+    email: 'Email',
+    phone: 'Téléphone',
+    detail: 'Détail client',
+  },
   menu: {
     menu: 'Menu',
     products: 'Produits',
     providers: 'Fournisseurs',
     orders: 'Commandes fournisseurs',
     sales: 'Commandes clients',
+    customers: 'Clients',
   },
 };

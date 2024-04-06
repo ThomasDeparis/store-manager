@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref, watch } from 'vue';
+import { defineComponent, ref, watch } from 'vue';
 export default defineComponent({
   name: 'PriceInput',
   emits: ['update:modelValue'],
