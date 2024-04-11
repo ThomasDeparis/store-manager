@@ -147,7 +147,6 @@ export default defineComponent({
 
     const customersRows = computed(() => {
       return customersStore.customers.map(function (c: ICustomer) {
-        console.log(c);
         return {
           ...c,
           actions: null, // to match with actions column

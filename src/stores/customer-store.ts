@@ -63,7 +63,6 @@ export const useCustomerStore = defineStore('customer', {
     async editCustomer(edited: ICustomer) {
       try {
         const customerDoc = doc(collection(db, 'customers'), edited.id);
-        console.log(edited);
 
         await updateDoc(customerDoc, {
           name: edited.name,

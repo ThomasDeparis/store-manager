@@ -7,3 +7,9 @@ export interface IUserState {
   isLoading: boolean;
   currentStore: string;
 }
+
+export interface IStore {
+  id: string;
+  userId: string;
+  name: string;
+}

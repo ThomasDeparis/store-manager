@@ -89,7 +89,6 @@ export default defineComponent({
 
     const handleTechnicalError = (error: ICustomerError) => {
       notifier.NotifyError('error');
-      console.log(error);
     };
 
     const handleNewCustomer = () => {

@@ -3,6 +3,7 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn
+          v-if="userAuthenticated"
           flat
           dense
           round
@@ -17,8 +18,8 @@
             v0.1.0
           </q-badge></q-toolbar-title
         >
-        <q-icon v-if="!!user?.email" name="account_circle" size="sm"></q-icon>
-        <p class="text-body2 q-ma-sm">{{ user?.email }}</p>
+        <q-icon v-if="!!userEmail" name="account_circle" size="sm"></q-icon>
+        <p class="text-body2 q-ma-sm">{{ userEmail }}</p>
         <div>
           <q-btn
             flat
@@ -31,7 +32,12 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" side="left" bordered>
+    <q-drawer
+      v-if="userAuthenticated"
+      v-model="leftDrawerOpen"
+      side="left"
+      bordered
+    >
       <q-list>
         <q-item-label header> Menu </q-item-label>
 
@@ -69,7 +75,8 @@ export default defineComponent({
     const leftDrawerOpen = ref(false);
 
     const userStore = useUserStore();
-    const user = computed(() => userStore.userData);
+    const userEmail = computed(() => userStore.userData?.email);
+    const userAuthenticated = computed(() => userStore.isAuthenticated);
 
     const menuLinks = [
       {
@@ -109,9 +116,12 @@ export default defineComponent({
     });
 
     const signButton = computed(() => {
-      if (user?.value) {
+      if (userAuthenticated.value) {
         return {
-          onSign: userStore.signOut,
+          onSign: () => {
+            userStore.signOut();
+            router.push({ name: 'signin' });
+          },
           label: t('auth.logoutAction'),
           icon: 'logout',
         };
@@ -130,7 +140,8 @@ export default defineComponent({
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
-      user,
+      userEmail,
+      userAuthenticated,
       signButton,
     };
   },

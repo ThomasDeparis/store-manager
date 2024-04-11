@@ -95,16 +95,23 @@ export default {
 
     const error = computed(() => userStore.error);
     const isLoading = computed(() => userStore.isLoading);
+    const isAuthenticated = computed(() => userStore.isAuthenticated);
 
-    const emitSignResults = () => {
-      !!error.value
-        ? context.emit('onSignFailed', error.value)
-        : context.emit('onSignSuccessful');
+    const checkSigninStatus = () => {
+      if (error.value) {
+        context.emit('onSignFailed', error.value);
+      }
     };
 
     watch(isLoading, (newLoading, oldLoading) => {
       if (oldLoading && !newLoading) {
-        emitSignResults();
+        checkSigninStatus();
+      }
+    });
+
+    watch(isAuthenticated, (newStatus, oldStatus) => {
+      if (!oldStatus && newStatus) {
+        context.emit('onSignSuccessful');
       }
     });
 

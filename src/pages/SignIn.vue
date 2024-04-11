@@ -17,10 +17,11 @@
 
 <script>
 import SignInputs from 'components/SignInputs.vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+import { watch } from 'vue';
 
-import { handleAuthError } from 'src/utils/auth-error-handler';
-import useNotifyHandler from 'src/hooks/notify-handler';
+import { handleAuthError } from 'utils/auth-error-handler';
+import useNotifyHandler from 'hooks/notify-handler';
 
 import { useI18n } from 'vue-i18n';
 
@@ -31,15 +32,28 @@ export default {
 
   setup() {
     const router = useRouter();
+    const route = useRoute();
     const { t } = useI18n();
     const notifier = useNotifyHandler();
+
+    let nextPage = route?.query?.nextPage;
+    watch(
+      () => route?.query?.nextPage,
+      (newVal) => {
+        nextPage = newVal;
+      }
+    );
 
     const handleSignFail = (error) =>
       notifier.NotifyError(handleAuthError(error));
 
     const handleSignOk = () => {
+      if (nextPage) {
+        router.push({ name: nextPage });
+      } else {
+        router.push({ name: 'products' });
+      }
       notifier.NotifySuccess(t('auth.loginOk'));
-      router.push({ name: 'products' });
     };
 
     return {
