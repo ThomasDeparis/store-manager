@@ -19,7 +19,7 @@
     <div class="row justify-around">
       <q-card class="col-4 my-card q-my-md" flat bordered>
         <q-card-section class="flex flex-center">
-          <q-img src="src/assets/example-product-page.PNG" />
+          <q-img src="assets/example-product-page.PNG" />
         </q-card-section>
         <q-card-section class="text-center vertical-middle">
           {{ $t('index.createProductText') }}
@@ -27,7 +27,7 @@
       </q-card>
       <q-card class="col-4 my-card q-my-md" flat bordered>
         <q-card-section class="flex flex-center">
-          <q-img src="src/assets/example-customer-page.PNG" />
+          <q-img src="assets/example-customer-page.PNG" />
         </q-card-section>
         <q-card-section class="text-center vertical-middle">
           {{ $t('index.createCustomersText') }}
@@ -35,7 +35,7 @@
       </q-card>
       <q-card class="col-4 my-card q-my-md" flat bordered>
         <q-card-section class="flex flex-center">
-          <q-img src="src/assets/example-order-page.PNG" />
+          <q-img src="assets/example-order-page.PNG" />
         </q-card-section>
         <q-card-section class="text-center">
           {{ $t('index.createOrdersText') }}
