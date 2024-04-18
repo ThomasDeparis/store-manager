@@ -4,6 +4,13 @@ export default {
       'Une erreur technique est survenue. Réessayer plus tard ou contacter le support',
     dateFormat: 'Format jj/mm/aaaa',
   },
+  index: {
+    subtitle: 'Un outil pour gérer simplement vos stocks',
+    createProductText: 'Créez vos fiches produits et gérez leur stock',
+    createCustomersText: 'Renseignez vos contacts fournisseurs et clients',
+    createOrdersText:
+      'Créez des commandes pour ajouter du stock et enregistrez les achats clients',
+  },
   buttons: {
     reset: 'Reset',
     create: 'Créer',

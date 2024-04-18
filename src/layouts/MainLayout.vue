@@ -4,17 +4,15 @@
       <q-toolbar>
         <q-btn
           flat
-          dense
-          round
           icon="menu"
-          :aria-label="$t('menu.menu')"
+          :label="$t('menu.menu')"
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title
-          >Store Manager
+        <q-toolbar-title class="q-ml-lg">
+          Store Manager
           <q-badge outline align="middle" color="white">
-            v0.1.0
+            v0.2.0
           </q-badge></q-toolbar-title
         >
         <q-icon v-if="!!userEmail" name="account_circle" size="sm"></q-icon>
