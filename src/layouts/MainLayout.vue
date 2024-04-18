@@ -3,7 +3,6 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn
-          v-if="userAuthenticated"
           flat
           dense
           round
@@ -32,15 +31,9 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-if="userAuthenticated"
-      v-model="leftDrawerOpen"
-      side="left"
-      bordered
-    >
+    <q-drawer v-model="leftDrawerOpen" side="left" bordered>
       <q-list>
         <q-item-label header> Menu </q-item-label>
-
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"

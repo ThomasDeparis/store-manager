@@ -29,6 +29,7 @@ export default {
     logoutAction: 'Se déconnecter',
     signUpAction: "S'inscrire",
     weakPassword: 'Le mot de passe doit contenir au moins 6 caractères',
+    emailExists: 'Cet email est déjà utilisé',
   },
   product: {
     referenceExists: 'Cette référence produit existe déjà',
