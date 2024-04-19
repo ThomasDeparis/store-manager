@@ -1,0 +1,1 @@
+import{i as t,at as e}from"./index.3e052ca9.js";function n(){return t(e)}function u(){const r=n();return{NotifySuccess:o=>{r.notify({color:"green-5",textColor:"white",icon:"cloud_done",message:o})},NotifyError:o=>{r.notify({color:"red-5",textColor:"white",icon:"error",message:o})}}}export{u};
