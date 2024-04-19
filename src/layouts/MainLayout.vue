@@ -20,7 +20,7 @@
         <div>
           <q-btn
             flat
-            name="sign-btn"
+            data-testid="header-signbtn"
             :icon-right="signButton.icon"
             :label="signButton.label"
             @click="signButton.onSign"

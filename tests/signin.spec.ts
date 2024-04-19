@@ -11,7 +11,7 @@ const delay = (milliseconds: number) => {
 
 const SignIn = async (page: Page, login: string, pwd: string) => {
   await page.goto(baseUrl);
-  await page.locator('button[name="sign-btn"]').click();
+  await page.getByTestId('header-signbtn').click();
   await page.getByTestId('signin-email-input').click();
   await page.getByTestId('signin-email-input').fill(login);
   await page.getByTestId('signin-password-input').click();
